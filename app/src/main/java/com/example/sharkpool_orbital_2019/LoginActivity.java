@@ -41,7 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
             String emailID = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-            if (!emailID.contains("testemaildomain.edu")){
+            //CHANGE TO "u.nus.edu" in live version - MAKE SURE THE "u" IS THERE OTHERWISE ALL THE GROUPS@NUS.EDU.SG EMAILS BECOME SPAMMABLE
+            if (!emailID.contains("gmail.com")){
                 FirebaseAuth.getInstance().getCurrentUser().delete();
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "Please use a valid NUS email ID", Toast.LENGTH_LONG).show();
