@@ -25,4 +25,13 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string-array name="options">
+        <item>John, Casio fx-96, 2 pm</item>
+        <item>Margaret, Casio fx-95, 1:30 pm</item>
+        <item>Jill, Black Pen, 1 pm</item>
+        <item>Jack, ti-Nspire, 1 pm</item>
+        <item>Bob, ti-84, 1 pm</item>
+        <item>Fred, Casio fx-96, 1 pm</item>
+        <item>Johnattan, Ruler, 1 pm</item>
+    </string-array>
 </resources>
