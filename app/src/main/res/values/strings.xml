@@ -5,6 +5,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="sign_out">Sign out</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
@@ -25,6 +26,8 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="menu_stats">Statistics</string>
+    <string name="menu_conversations">Conversations</string>
     <string-array name="options">
         <item>John, Casio fx-96, 2 pm</item>
         <item>Margaret, Casio fx-95, 1:30 pm</item>

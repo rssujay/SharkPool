@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         final Button signIn = findViewById(R.id.signinbtn);
         //Uncomment the below line to signout until a log out button is created
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                                 count++;
                             }
                             else{
-                                Toast.makeText(v.getContext(), "Ensure you have verified and retry", Toast.LENGTH_LONG).show();
+                                Toast.makeText(v.getContext(), "Ensure you have verified and retry in a minute", Toast.LENGTH_LONG).show();
                             }
                         }
 
