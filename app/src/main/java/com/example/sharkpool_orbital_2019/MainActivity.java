@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                                 count++;
                             }
                             else{
-                                Toast.makeText(v.getContext(), "Ensure you have verified and retry in a minute", Toast.LENGTH_LONG).show();
+                                Toast.makeText(v.getContext(), "Ensure that you have verified and retry in a minute", Toast.LENGTH_LONG).show();
                             }
                         }
 
