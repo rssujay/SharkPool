@@ -2,8 +2,11 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,6 +46,10 @@ public class MainMenu extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Bottom Nav Bar config
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
     }
 
     @Override
@@ -94,4 +101,36 @@ public class MainMenu extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    Fragment selectedFragment = null;
+
+                    switch (menuItem.getItemId()){
+                        case R.id.ongoing:
+                            selectedFragment = new OngoingFragment();
+                            break;
+                        case R.id.history:
+                            selectedFragment = new HistoryFragment();
+                            break;
+                        case R.id.requests:
+                            selectedFragment = new RequestsFragment();
+                            break;
+                        case R.id.profile:
+                            selectedFragment = new ProfileFragment();
+                            break;
+                        default:
+                            selectedFragment = new RequestsFragment();
+                    }
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container,
+                            selectedFragment).commit();
+
+                    return true;
+                }
+            };
+
+
 }
