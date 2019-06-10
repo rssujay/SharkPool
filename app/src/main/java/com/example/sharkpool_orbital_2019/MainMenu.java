@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,7 +20,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,11 +41,8 @@ public class MainMenu extends AppCompatActivity
 
         //Drawer config
         View hView = navigationView.getHeaderView(0);
-        TextView nav_name = hView.findViewById(R.id.nav_name);
-        TextView nav_email = hView.findViewById(R.id.nav_email);
-        nav_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        nav_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
+        final TextView nav_name = hView.findViewById(R.id.nav_name);
+        final TextView nav_email = hView.findViewById(R.id.nav_email);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -50,6 +53,27 @@ public class MainMenu extends AppCompatActivity
         //Bottom Nav Bar config
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        //get userdata from DB
+        final AppUser currUser = new AppUser();
+        currUser.initialize("Error fetching name", "Error fetching email", -1);
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
+        Task<DocumentSnapshot> document = mDocRef.get();
+
+        document.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String displayName = documentSnapshot.get("displayName").toString();
+                Log.v("DB req", displayName);
+                String emailAddress = documentSnapshot.get("emailAddress").toString();
+                int credits = ((Long) documentSnapshot.get("credits")).intValue();
+                currUser.initialize(displayName,emailAddress, credits);
+                nav_name.setText(currUser.getDisplayName());
+                nav_email.setText(currUser.getEmailAddress());
+            }
+        });
     }
 
     @Override
