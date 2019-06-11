@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -74,6 +77,18 @@ public class MainMenu extends AppCompatActivity
                 nav_email.setText(currUser.getEmailAddress());
             }
         });
+        /*
+        // Ongoing requests fragment configuration
+        ArrayList<BorrowRequest> borrowRequests = new ArrayList<>();
+        RequestArrayAdaptor requestArrayAdaptor = new RequestArrayAdaptor(this, borrowRequests);
+        ListView listView = (ListView) findViewById(R.id.ongoingListView);
+        listView.setAdapter(requestArrayAdaptor);
+
+        //TEST FOR ONGOING REQUESTS DATA DISPLAY
+        BorrowRequest newRequest = new BorrowRequest();
+        newRequest.initialize("test_id","Pen");
+        requestArrayAdaptor.add(newRequest);
+        */
     }
 
     @Override

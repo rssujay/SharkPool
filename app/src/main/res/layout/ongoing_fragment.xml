@@ -2,11 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TextView
+    <Button
+        android:id="@+id/addRequest_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ongoing Screen"
-        android:layout_centerInParent="true"
-        android:textSize="36sp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorPrimary"
+        android:text="Submit New"
+        android:textAlignment="center"
+        android:textSize="14sp" />
+
+    <ListView
+        android:id="@+id/ongoingListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/addRequest_button"
+        android:layout_marginTop="16dp" />
 
 </RelativeLayout>

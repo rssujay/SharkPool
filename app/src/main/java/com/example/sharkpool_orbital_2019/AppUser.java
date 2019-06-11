@@ -30,7 +30,7 @@ public class AppUser{
         return this.credits;
     }
 
-    public boolean updateCredits(int extraCredits){
+    public boolean updateCredits(int extraCredits){ //+ve for lend, -ve for borrow
         if (this.credits + extraCredits < 0){
             return false; //indicates unsuccessful
         }
