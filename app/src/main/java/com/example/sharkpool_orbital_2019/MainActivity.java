@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         final Button signIn = findViewById(R.id.signinbtn);
-        //Uncomment the below line to signout until a log out button is created
-        //FirebaseAuth.getInstance().signOut();
 
         // Proceed to main menu immediately if email verified and logged in
          if (FirebaseAuth.getInstance().getUid() != null && FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()){

@@ -1,10 +1,24 @@
 package com.example.sharkpool_orbital_2019;
 
 public class BorrowRequest {
+    //Borrower properties
     private String borrowerUID;
-    private String lenderUID;
-    private int creditValue;
+    private String itemName;
     private String itemType;
+    private int borrowerCredits;
+    private String comments;
+    private boolean recommendations;
+    private boolean borrowerLock;
+
+    //Lender properties
+    private String lenderUID;
+    private int lenderCredit;
+    private boolean lenderLock;
+
+    //Final, joint attributes
+    private int creditValue;
+
+
     private String status;
     /*
     Open: open request, visible for all
@@ -15,67 +29,64 @@ public class BorrowRequest {
 
     public BorrowRequest(){} //no-argument constructor for firestore
 
-    public void initialize(String borrowerUID, String itemType){
+    public void startBorrowRequest(String borrowerUID, String itemName, String itemType, int borrowerCredits, String comments, boolean recommendations){
         this.borrowerUID = borrowerUID;
+        this.itemName = itemName;
         this.itemType = itemType;
+        this.borrowerCredits = borrowerCredits;
+        this.comments = comments;
+        this.recommendations = recommendations;
         this.lenderUID = "None";
         this.status = "Open";
+        this.borrowerLock = true;
+        this.lenderLock = false;
     }
 
     public String getBorrowerUID() {
-        return this.borrowerUID;
+        return borrowerUID;
     }
 
-    public String getLenderUID() {
-        return this.lenderUID;
-    }
-
-    public void setLenderUID(String lenderUID) {
-        this.lenderUID = lenderUID;
+    public String getItemName() {
+        return itemName;
     }
 
     public String getItemType() {
-        return this.itemType;
+        return itemType;
     }
 
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
+    public int getBorrowerCredits() {
+        return borrowerCredits;
     }
 
-    public String getStatus() {
-        return this.status;
+    public String getComments() {
+        return comments;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public boolean Recommendations(){
+        return recommendations;
+    }
+
+    public boolean isBorrowerLock() {
+        return borrowerLock;
+    }
+
+    public String getLenderUID() {
+        return lenderUID;
+    }
+
+    public int getLenderCredit() {
+        return lenderCredit;
+    }
+
+    public boolean isLenderLock() {
+        return lenderLock;
     }
 
     public int getCreditValue() {
-        return this.creditValue;
+        return creditValue;
     }
 
-    public void setCreditValue() { //hard-coded setting of credit values
-        String type = this.getItemType();
-        int creditValue = 10;
-        switch (type){
-            case "Pencil":
-                creditValue = 10;
-                break;
-            case "Eraser":
-                creditValue = 10;
-                break;
-            case "Pen":
-                creditValue = 20;
-                break;
-            case "Ruler":
-                creditValue = 20;
-                break;
-            case "Scientific Calculator":
-                creditValue = 100;
-                break;
-            case "GC":
-                creditValue = 500;
-        }
-        this.creditValue = creditValue;
+    public String getStatus() {
+        return status;
     }
 }

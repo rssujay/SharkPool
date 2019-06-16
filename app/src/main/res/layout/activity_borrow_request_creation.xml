@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/linear"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/itemName"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Item Name"
+            />
+
+        <EditText
+            android:id = "@+id/itemNameEntry"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            />
+
+        <TextView
+            android:id="@+id/itemType"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Item Type"
+            />
+
+        <Spinner
+            android:id = "@+id/itemTypeEntry"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            />
+
+
+        <EditText
+            android:id = "@+id/itemTypeCustomEntry"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="Enter type name here"
+            android:visibility="invisible"
+            />
+
+        <TextView
+            android:id="@+id/creditValue"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Number of credits you are willing to offer"
+            />
+
+        <NumberPicker
+            android:id="@+id/creditValueEntry"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            />
+
+        <TextView
+            android:id="@+id/comments"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Additional comments (optional)"
+            />
+
+        <EditText
+            android:id="@+id/commentsEntry"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            />
+
+        <CheckBox
+            android:id="@+id/recommendationsEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center"
+            android:text="Look for similar items (recommended)" />
+
+        <Button
+            android:id="@+id/brSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="Submit"
+            android:onClick="addToDB"
+            />
+
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

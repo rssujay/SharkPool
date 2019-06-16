@@ -13,7 +13,8 @@
         android:background="@color/colorPrimary"
         android:text="Submit New"
         android:textAlignment="center"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        />
 
     <ListView
         android:id="@+id/ongoingListView"
