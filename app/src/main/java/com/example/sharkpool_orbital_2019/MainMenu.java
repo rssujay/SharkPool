@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,8 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -69,7 +63,6 @@ public class MainMenu extends AppCompatActivity
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 String displayName = documentSnapshot.get("displayName").toString();
-                Log.v("DB req", displayName);
                 String emailAddress = documentSnapshot.get("emailAddress").toString();
                 int credits = ((Long) documentSnapshot.get("credits")).intValue();
                 currUser.initialize(displayName,emailAddress, credits);
@@ -158,7 +151,7 @@ public class MainMenu extends AppCompatActivity
                             selectedFragment = new RequestsFragment();
                             break;
                         case R.id.profile:
-                            selectedFragment = new ProfileFragment();
+                            selectedFragment = new LendlistFragment();
                             break;
                         default:
                             selectedFragment = new RequestsFragment();

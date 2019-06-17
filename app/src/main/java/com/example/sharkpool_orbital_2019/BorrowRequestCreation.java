@@ -76,9 +76,6 @@ public class BorrowRequestCreation extends AppCompatActivity {
     }
 
     private void populateOptions(){
-        final ArrayList<String> fromDB = new ArrayList<>();
-
-
         CollectionReference collRef = db.collection("itemTypes");
 
         collRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

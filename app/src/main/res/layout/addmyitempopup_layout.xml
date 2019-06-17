@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="#62def8"
+    >
+
+    <EditText
+        android:id="@+id/myItemNameEntry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter item name"
+        />
+
+
+    <AutoCompleteTextView
+        android:id="@+id/myItemCustomTypeEntry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/myItemNameEntry"
+        android:completionThreshold="0"
+        android:hint="Select/Enter item type"
+        />
+
+    <ProgressBar
+        android:id="@+id/indeterminateBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/myItemCustomTypeEntry"
+        android:layout_marginStart="125dp"
+        android:layout_toRightOf="@+id/myItemCreateBtn"
+        android:visibility="invisible"
+        />
+    <Button
+        android:id="@+id/myItemCreateBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/myItemCustomTypeEntry"
+        android:layout_centerHorizontal="true"
+        android:text="Add item"
+        />
+
+</RelativeLayout>
