@@ -8,15 +8,15 @@
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_menu_manage"
-        android:title="Profile"
+        android:title="My List"
         />
     <item
         android:id="@+id/requests"
         android:icon="@drawable/ic_menu_slideshow"
-        android:title="Requests" />
+        android:title="Ongoing" />
     <item
         android:id="@+id/ongoing"
         android:icon="@drawable/ic_menu_share"
-        android:title="Ongoing" />
+        android:title="Open Requests" />
 </menu>
 

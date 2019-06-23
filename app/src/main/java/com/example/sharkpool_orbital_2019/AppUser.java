@@ -16,11 +16,11 @@ public class AppUser{
 
     public AppUser(){}
 
-    public void initialize(String displayName, String emailAddress, int credits){
+    public void initialize(String displayName, String emailAddress, int credits, Boolean tocAgreed){
         this.displayName = displayName;
         this.emailAddress = emailAddress;
         this.credits = credits;
-        this.tocAgreed = false;
+        this.tocAgreed = tocAgreed;
         this.initLend = false;
         this.currentRequests = new ArrayList<>();
         this.transactionLog = new ArrayList<>();

@@ -31,6 +31,7 @@ public class MainMenu extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        setTitle("Dashboard");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -53,7 +54,7 @@ public class MainMenu extends AppCompatActivity
 
         //get userdata from DB
         final AppUser currUser = new AppUser();
-        currUser.initialize("Error fetching name", "Error fetching email", -1);
+        currUser.initialize("Error fetching name", "Error fetching email", -1, false);
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
@@ -65,9 +66,15 @@ public class MainMenu extends AppCompatActivity
                 String displayName = documentSnapshot.get("displayName").toString();
                 String emailAddress = documentSnapshot.get("emailAddress").toString();
                 int credits = ((Long) documentSnapshot.get("credits")).intValue();
-                currUser.initialize(displayName,emailAddress, credits);
+                Boolean tocAgreed = documentSnapshot.getBoolean("tocAgreed");
+                currUser.initialize(displayName,emailAddress, credits, tocAgreed);
                 nav_name.setText(currUser.getDisplayName());
                 nav_email.setText(currUser.getEmailAddress());
+
+                if(!currUser.isTocAgreed()){
+                    Intent intent = new Intent(getBaseContext(), tocPage.class);
+                    startActivity(intent);
+                }
             }
         });
         /*
