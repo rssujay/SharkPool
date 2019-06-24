@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
             else{ // Add user details to database
                 AppUser newUser = new AppUser();
-                newUser.initialize(displayName, emailID, 100, false); //Hardcoded value of 100 initial credits
+                newUser.createUser(displayName, emailID);
                 DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
 
                 mDocRef.set(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {

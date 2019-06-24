@@ -29,6 +29,8 @@ import java.util.List;
 
 public class BorrowRequestCreation extends AppCompatActivity {
     private static final String TAG = "BorrowRequestCreation";
+
+    AppUser currUser = new AppUser();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -56,9 +58,12 @@ public class BorrowRequestCreation extends AppCompatActivity {
         db.collection("users").document(uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Long tempval = documentSnapshot.getLong("credits");
+                String displayName = documentSnapshot.get("displayName").toString();
+                String emailAddress = documentSnapshot.get("emailAddress").toString();
+                int credits = ((Long) documentSnapshot.get("credits")).intValue();
+                currUser.initialize(displayName, emailAddress, credits);
                 creditValueEntry.setMinValue(0);
-                creditValueEntry.setMaxValue(tempval.intValue());
+                creditValueEntry.setMaxValue(currUser.getCredits());
             }
         });
         populateOptions();
@@ -108,8 +113,8 @@ public class BorrowRequestCreation extends AppCompatActivity {
     }
 
     public void addToDB(View v){
-        BorrowRequest newReq = new BorrowRequest();
-        String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        final BorrowRequest newReq = new BorrowRequest();
+        String displayName = currUser.getDisplayName();
         String itemName = itemNameEntry.getText().toString();
 
         String defaultType = itemTypeEntry.getSelectedItem().toString();
@@ -127,12 +132,13 @@ public class BorrowRequestCreation extends AppCompatActivity {
         else{
             newReq.startBorrowRequest(uid, displayName, itemName, itemType, creditValue, comments, recommendations);
             //Attempt to store in DB
-            db.collection("requests").document().set(newReq)
+            db.collection("requests").document(newReq.getRequestID()).set(newReq)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     //Deduct credits from user
                     db.collection("users").document(uid).update("credits", FieldValue.increment(-creditValue));
+                    db.collection("users").document(uid).update("requests", FieldValue.arrayUnion(newReq.getRequestID()));
                     Intent intent = new Intent(BorrowRequestCreation.this, MainMenu.class);
                     startActivity(intent);
                 }

@@ -27,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    AppUser currUser = new AppUser();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +55,12 @@ public class MainMenu extends AppCompatActivity
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        //get userdata from DB
-        final AppUser currUser = new AppUser();
-        currUser.initialize("Error fetching name", "Error fetching email", -1, false);
-
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //get userdata from DB
+        currUser.initialize("Error fetching name", "Error fetching email", -1);
+
+
         DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
         Task<DocumentSnapshot> document = mDocRef.get();
 

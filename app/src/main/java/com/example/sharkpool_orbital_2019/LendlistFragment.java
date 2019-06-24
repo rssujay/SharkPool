@@ -69,13 +69,13 @@ public class LendlistFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         listRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 lendList.clear();
-                for (QueryDocumentSnapshot document: queryDocumentSnapshots){
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     lendList.add(document.toObject(MyItem.class));
                 }
                 MyAdapter mData = new MyAdapter(lendList);

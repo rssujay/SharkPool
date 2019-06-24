@@ -44,7 +44,10 @@ public class OpenRequestsFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document: queryDocumentSnapshots){
-                    if (!document.get("borrowerUID").equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    if (document.get("status").equals("Open") &&
+                            !(document.get("borrowerUID").equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))) {
+                        // Comment out the above and uncomment the below version for debugging until "Ongoing" works
+                        // (document.get("borrowerUID").equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))) {
                         openRequests.add(document.toObject(BorrowRequest.class));
                     }
                 }

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BRview">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/reqID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Request ID: "
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/brStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Status: "
+
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reqID"
+            />
+
+        <TextView
+            android:id="@+id/itmName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Item Name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/brStatus"
+            />
+
+        <TextView
+            android:id="@+id/itmType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Item Type"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itmName"
+            />
+
+        <ImageView
+            android:id="@+id/spIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/spcredits"
+
+            app:layout_constraintTop_toBottomOf="@id/itmType"
+            app:layout_constraintStart_toStartOf="@id/borrowName"
+            app:layout_constraintEnd_toEndOf="@id/lendName"
+            />
+
+        <TextView
+            android:id="@+id/itmCredits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Credits: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spIcon"
+            />
+
+        <TextView
+            android:id="@+id/brComments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text='Borrower comments: '
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itmCredits"
+            />
+
+        <TextView
+            android:id="@+id/borrowName"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            android:text="TextView"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/itmType"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="40dp"
+            />
+
+        <TextView
+            android:id="@+id/lendName"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            android:text="No active lender"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/itmType"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="40dp"
+            />
+
+        <Button
+            android:id="@+id/becomeLender"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            android:text="Become lender"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/lendName"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="40dp"
+            android:visibility="invisible"
+            />
+
+        <Button
+            android:id="@+id/chatButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="chat"
+
+            app:layout_constraintTop_toBottomOf="@+id/brComments"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/userCode1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text='Initial code: '
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chatButton"
+            />
+
+        <TextView
+            android:id="@+id/userCode2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text='Return code: '
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userCode1"
+            />
+
+        <TextView
+            android:id="@+id/startDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text='Borrowed at: '
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/submitCode"
+            />
+
+        <TextView
+            android:id="@+id/returnDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text='Returned at: '
+
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/startDate"
+            />
+
+        <EditText
+            android:id="@+id/codeEntry"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:textAlignment="center"
+            android:hint="Enter 8-digit combined code: LLLLBBBB"
+
+            app:layout_constraintTop_toBottomOf="@+id/userCode2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Button
+            android:id="@+id/submitCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+
+            app:layout_constraintTop_toBottomOf="@+id/codeEntry"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Button
+            android:id="@+id/borrowCancel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Delete request"
+            android:enabled="false"
+            android:background="@color/colorAccent"
+
+            app:layout_constraintTop_toBottomOf="@+id/returnDate"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:onClick="borrowDelete"
+            />
+
+        <Button
+            android:id="@+id/lendCancel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel lending"
+            android:enabled="false"
+            android:background="@color/colorAccent"
+
+            app:layout_constraintTop_toBottomOf="@+id/returnDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            />
+
+        <Button
+            android:id="@+id/dispute"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Open Dispute"
+            android:enabled="false"
+
+            app:layout_constraintTop_toBottomOf="@+id/returnDate"
+            app:layout_constraintEnd_toStartOf="@id/lendCancel"
+            app:layout_constraintStart_toEndOf="@id/borrowCancel"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

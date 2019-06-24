@@ -3,26 +3,32 @@ package com.example.sharkpool_orbital_2019;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class BorrowRequest {
+    //Item properties
+    private String itemName;
+    private String itemType;
+
     //Borrower properties
     private String borrowerUID;
     private String borrowerName;
-    private String itemName;
-    private String itemType;
-    private int borrowerCredits;
     private String comments;
     private boolean recommendations;
-    private boolean borrowerLock;
+    private int borrowCodeOne;
+    private int borrowCodeTwo;
 
     //Lender properties
     private String lenderUID;
     private String lenderName;
-    private int lenderCredit;
-    private boolean lenderLock;
+    private int lendCodeOne;
+    private int lendCodeTwo;
 
     //Final, joint attributes
+    private String requestID;
     private int creditValue;
+    private boolean dispute;
+    private String status;
 
     @ServerTimestamp
     public Date createdDate;
@@ -30,8 +36,6 @@ public class BorrowRequest {
     public Date startDate;
     public Date returnDate;
 
-
-    private String status;
     /*
     Open: open request, visible for all
     OnHold: lender has indicated interest, request made invisible to public
@@ -41,21 +45,68 @@ public class BorrowRequest {
 
     public BorrowRequest(){} //no-argument constructor for firestore
 
-    public void startBorrowRequest(String borrowerUID, String borrowerName, String itemName, String itemType, int borrowerCredits, String comments, boolean recommendations){
-        this.borrowerUID = borrowerUID;
-        this.borrowerName = borrowerName;
+    public void startBorrowRequest(String borrowerUID, String borrowerName, String itemName, String itemType, int creditValue,
+                                   String comments, boolean recommendations){
+        //Item
         this.itemName = itemName;
         this.itemType = itemType;
-        this.borrowerCredits = borrowerCredits;
+
+        //Borrower
+        this.borrowerUID = borrowerUID;
+        this.borrowerName = borrowerName;
         this.comments = comments;
         this.recommendations = recommendations;
+        this.borrowCodeOne = (int) (Math.random()*8998 + 1001);
+        this.borrowCodeTwo = (int) (Math.random()*8998 + 1001);
+
+        //Lender
         this.lenderUID = "";
         this.lenderName = "";
+        this.lendCodeOne = (int) (Math.random()*8998 + 1001);
+        this.lendCodeTwo = (int) (Math.random()*8998 + 1001);
+
+        //Joint
+        this.requestID = UUID.randomUUID().toString();
+        this.creditValue = creditValue;
+        this.dispute = false;
         this.status = "Open";
-        this.borrowerLock = true;
-        this.lenderLock = false;
+
         this.startDate = new Date(0);
         this.returnDate = new Date(0);
+    }
+
+    public void populate(String requestID, String borrowerUID, String borrowerName, String lenderUID, String lenderName,
+                         String status, String comments, Date createdDate, Date startDate, Date returnDate,
+                         int borrowCodeOne, int borrowCodeTwo, int lendCodeOne, int lendCodeTwo,String itemName,
+                         String itemType, boolean recommendations, int creditValue, boolean dispute
+                         ){
+        //Item
+        this.itemName = itemName;
+        this.itemType = itemType;
+
+        //Borrower
+        this.borrowerUID = borrowerUID;
+        this.borrowerName = borrowerName;
+        this.comments = comments;
+        this.recommendations = recommendations;
+        this.borrowCodeOne = borrowCodeOne;
+        this.borrowCodeTwo = borrowCodeTwo;
+
+        //Lender
+        this.lenderUID = lenderUID;
+        this.lenderName = lenderName;
+        this.lendCodeOne = lendCodeOne;
+        this.lendCodeTwo = lendCodeTwo;
+
+        //Joint
+        this.requestID = requestID;
+        this.creditValue = creditValue;
+        this.dispute = dispute;
+        this.status = status;
+
+        this.createdDate = createdDate;
+        this.startDate = startDate;
+        this.returnDate = returnDate;
     }
 
     public String getBorrowerUID() {
@@ -74,20 +125,36 @@ public class BorrowRequest {
         return itemType;
     }
 
-    public int getBorrowerCredits() {
-        return borrowerCredits;
+    public boolean isDispute() {
+        return dispute;
+    }
+
+    public String getRequestID() {
+        return requestID;
+    }
+
+    public int getBorrowCodeOne() {
+        return borrowCodeOne;
+    }
+
+    public int getBorrowCodeTwo() {
+        return borrowCodeTwo;
+    }
+
+    public int getLendCodeOne() {
+        return lendCodeOne;
+    }
+
+    public int getLendCodeTwo() {
+        return lendCodeTwo;
     }
 
     public String getComments() {
         return comments;
     }
 
-    public boolean Recommendations(){
+    public boolean isRecommendations() {
         return recommendations;
-    }
-
-    public boolean isBorrowerLock() {
-        return borrowerLock;
     }
 
     public String getLenderUID() {
@@ -98,13 +165,6 @@ public class BorrowRequest {
         return lenderName;
     }
 
-    public int getLenderCredit() {
-        return lenderCredit;
-    }
-
-    public boolean isLenderLock() {
-        return lenderLock;
-    }
 
     public int getCreditValue() {
         return creditValue;
