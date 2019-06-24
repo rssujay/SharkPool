@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/history"
-        android:icon="@drawable/ic_menu_gallery"
+        android:icon="@drawable/history"
         android:title="History"
         />
     <item
         android:id="@+id/profile"
-        android:icon="@drawable/ic_menu_manage"
+        android:icon="@drawable/scroll"
         android:title="My List"
         />
     <item
@@ -16,7 +16,7 @@
         android:title="Ongoing" />
     <item
         android:id="@+id/ongoing"
-        android:icon="@drawable/ic_menu_share"
+        android:icon="@drawable/addreq"
         android:title="Open Requests" />
 </menu>
 

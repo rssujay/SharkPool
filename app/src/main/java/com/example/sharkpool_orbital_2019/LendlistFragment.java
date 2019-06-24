@@ -39,15 +39,15 @@ import java.util.Vector;
 public class LendlistFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    CollectionReference listRef = db.collection("users").document(uid).collection("lendList");
-    TextView itemCountText;
+    private CollectionReference listRef = db.collection("users").document(uid).collection("lendList");
+    private TextView itemCountText;
 
     //Setup popup variables for adding new items
-    EditText myNewItemNameEntry;
-    AutoCompleteTextView myNewItemTypeEntry;
-    Button myNewItemSubmit;
-    ProgressBar submitBar;
-    Vector<MyItem> lendList = new Vector<>();
+    private EditText myNewItemNameEntry;
+    private AutoCompleteTextView myNewItemTypeEntry;
+    private Button myNewItemSubmit;
+    private ProgressBar submitBar;
+    private Vector<MyItem> lendList = new Vector<>();
 
     private RecyclerView recyclerView;
 

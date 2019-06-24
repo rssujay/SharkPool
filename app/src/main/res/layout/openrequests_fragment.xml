@@ -6,21 +6,23 @@
         android:id="@+id/addRequest_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/colorPrimary"
-        android:text="Submit New"
+        android:text="Create New Request"
         android:textAlignment="center"
         android:textSize="14sp"
         />
 
-    <ListView
-        android:id="@+id/ongoingListView"
+    <android.support.v7.widget.RecyclerView
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/openRequestsList"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        tools:context=".MainMenu"
         android:layout_below="@+id/addRequest_button"
-        android:layout_marginTop="16dp" />
+        />
 
 </RelativeLayout>

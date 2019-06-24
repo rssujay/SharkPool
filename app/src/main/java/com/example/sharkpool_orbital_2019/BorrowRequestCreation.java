@@ -101,6 +101,7 @@ public class BorrowRequestCreation extends AppCompatActivity {
     public void addToDB(View v){
         BorrowRequest newReq = new BorrowRequest();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         String itemName = itemNameEntry.getText().toString();
 
         String defaultType = itemTypeEntry.getSelectedItem().toString();
@@ -116,7 +117,7 @@ public class BorrowRequestCreation extends AppCompatActivity {
         }
 
         else{
-            newReq.startBorrowRequest(uid, itemName, itemType, creditValue, comments, recommendations);
+            newReq.startBorrowRequest(uid, displayName, itemName, itemType, creditValue, comments, recommendations);
 
             //Attempt to store in DB
             db.collection("requests").document().set(newReq)

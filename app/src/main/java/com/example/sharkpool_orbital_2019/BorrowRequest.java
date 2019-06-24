@@ -1,8 +1,13 @@
 package com.example.sharkpool_orbital_2019;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 public class BorrowRequest {
     //Borrower properties
     private String borrowerUID;
+    private String borrowerName;
     private String itemName;
     private String itemType;
     private int borrowerCredits;
@@ -12,11 +17,18 @@ public class BorrowRequest {
 
     //Lender properties
     private String lenderUID;
+    private String lenderName;
     private int lenderCredit;
     private boolean lenderLock;
 
     //Final, joint attributes
     private int creditValue;
+
+    @ServerTimestamp
+    public Date createdDate;
+
+    public Date startDate;
+    public Date returnDate;
 
 
     private String status;
@@ -29,21 +41,29 @@ public class BorrowRequest {
 
     public BorrowRequest(){} //no-argument constructor for firestore
 
-    public void startBorrowRequest(String borrowerUID, String itemName, String itemType, int borrowerCredits, String comments, boolean recommendations){
+    public void startBorrowRequest(String borrowerUID, String borrowerName, String itemName, String itemType, int borrowerCredits, String comments, boolean recommendations){
         this.borrowerUID = borrowerUID;
+        this.borrowerName = borrowerName;
         this.itemName = itemName;
         this.itemType = itemType;
         this.borrowerCredits = borrowerCredits;
         this.comments = comments;
         this.recommendations = recommendations;
-        this.lenderUID = "None";
+        this.lenderUID = "";
+        this.lenderName = "";
         this.status = "Open";
         this.borrowerLock = true;
         this.lenderLock = false;
+        this.startDate = new Date(0);
+        this.returnDate = new Date(0);
     }
 
     public String getBorrowerUID() {
         return borrowerUID;
+    }
+
+    public String getBorrowerName() {
+        return borrowerName;
     }
 
     public String getItemName() {
@@ -74,6 +94,10 @@ public class BorrowRequest {
         return lenderUID;
     }
 
+    public String getLenderName() {
+        return lenderName;
+    }
+
     public int getLenderCredit() {
         return lenderCredit;
     }
@@ -89,4 +113,18 @@ public class BorrowRequest {
     public String getStatus() {
         return status;
     }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
 }
+
+

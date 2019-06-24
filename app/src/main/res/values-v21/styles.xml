@@ -5,4 +5,16 @@
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="GreyOrange" parent="Theme.AppCompat">
+        <item name="colorPrimary">#344955</item>
+        <item name="colorPrimaryDark">#232F34</item>
+        <item name="colorSecondary">#F9AA33</item>
+    </style>
+
+    <style name="GreyOrange.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>

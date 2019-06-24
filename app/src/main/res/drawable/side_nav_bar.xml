@@ -6,4 +6,12 @@
         android:endColor="#00695C"
         android:startColor="#4DB6AC"
         android:type="linear" />
+    <!--
+    <gradient
+        android:angle="135"
+        android:centerColor="#344955"
+        android:endColor="#4A6572"
+        android:startColor="#232F34"
+        android:type="linear" />
+     -->
 </shape>

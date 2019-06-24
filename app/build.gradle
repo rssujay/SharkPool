@@ -10,6 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resConfigs "en"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -33,6 +34,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.firebase:firebase-firestore:19.0.2'
     implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 apply plugin: 'com.google.gms.google-services'
