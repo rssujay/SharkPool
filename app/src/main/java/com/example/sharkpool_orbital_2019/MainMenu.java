@@ -39,6 +39,7 @@ public class MainMenu extends AppCompatActivity
 
         //Drawer config
         View hView = navigationView.getHeaderView(0);
+        final TextView nav_credit = hView.findViewById(R.id.creditsNum);
         final TextView nav_name = hView.findViewById(R.id.nav_name);
         final TextView nav_email = hView.findViewById(R.id.nav_email);
 
@@ -70,6 +71,9 @@ public class MainMenu extends AppCompatActivity
                 currUser.initialize(displayName,emailAddress, credits, tocAgreed);
                 nav_name.setText(currUser.getDisplayName());
                 nav_email.setText(currUser.getEmailAddress());
+
+                Integer tempCredits = currUser.getCredits();
+                nav_credit.append(tempCredits.toString());
 
                 if(!currUser.isTocAgreed()){
                     Intent intent = new Intent(getBaseContext(), tocPage.class);

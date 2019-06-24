@@ -20,7 +20,7 @@
     
     <TextView
         android:id="@+id/ItemName"
-        android:layout_width="300dp"
+        android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -30,36 +30,33 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         />
 
-    <LinearLayout
-        android:layout_width="60dp"
-        android:layout_height="20dp"
-        android:layout_toEndOf="@id/ItemName"
+    <ImageView
+        android:id="@+id/creditIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="Credits:"
+        android:src="@drawable/spcredits"
+        android:layout_toRightOf="@id/ItemName"
         android:layout_below="@id/borrowerName"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        >
+        android:layout_marginTop="21dp"
+        />
 
-        <ImageView
-            android:id="@+id/creditIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/credits"
-            android:contentDescription="Credits:"
-            />
-
-        <TextView
-            android:id="@+id/creditVal"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0"
-            />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/creditVal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/borrowerName"
+        android:layout_toEndOf="@id/creditIcon"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="5dp"
+        android:text="0"
+        android:textAlignment="viewStart"
+        />
 
 
     <TextView
         android:id="@+id/ItemType"
-        android:layout_width="300dp"
+        android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin"

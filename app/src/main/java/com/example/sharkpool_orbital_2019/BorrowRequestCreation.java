@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,6 +29,7 @@ import java.util.List;
 
 public class BorrowRequestCreation extends AppCompatActivity {
     private static final String TAG = "BorrowRequestCreation";
+    private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     // Set up variables
@@ -50,8 +53,14 @@ public class BorrowRequestCreation extends AppCompatActivity {
         commentsEntry = findViewById(R.id.commentsEntry);
         recommendationsEntry = findViewById(R.id.recommendationsEntry);
 
-        creditValueEntry.setMinValue(0);
-        creditValueEntry.setMaxValue(1000);
+        db.collection("users").document(uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Long tempval = documentSnapshot.getLong("credits");
+                creditValueEntry.setMinValue(0);
+                creditValueEntry.setMaxValue(tempval.intValue());
+            }
+        });
         populateOptions();
 
         itemTypeEntry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -100,7 +109,6 @@ public class BorrowRequestCreation extends AppCompatActivity {
 
     public void addToDB(View v){
         BorrowRequest newReq = new BorrowRequest();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         String itemName = itemNameEntry.getText().toString();
 
@@ -108,7 +116,7 @@ public class BorrowRequestCreation extends AppCompatActivity {
         String customType = itemTypeCustomEntry.getText().toString();
         String itemType = (defaultType.equals("Custom"))? customType : defaultType;
 
-        int creditValue = creditValueEntry.getValue();
+        final int creditValue = creditValueEntry.getValue();
         String comments = commentsEntry.getText().toString();
         boolean recommendations = recommendationsEntry.isChecked();
 
@@ -118,12 +126,13 @@ public class BorrowRequestCreation extends AppCompatActivity {
 
         else{
             newReq.startBorrowRequest(uid, displayName, itemName, itemType, creditValue, comments, recommendations);
-
             //Attempt to store in DB
             db.collection("requests").document().set(newReq)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
+                    //Deduct credits from user
+                    db.collection("users").document(uid).update("credits", FieldValue.increment(-creditValue));
                     Intent intent = new Intent(BorrowRequestCreation.this, MainMenu.class);
                     startActivity(intent);
                 }
