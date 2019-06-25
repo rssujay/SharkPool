@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
@@ -46,9 +47,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Respond to Authentication Callback
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
-            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-            String emailID = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+            final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            final String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+            final String emailID = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             //CHANGE TO "u.nus.edu" in live version - MAKE SURE THE "u" IS THERE OTHERWISE ALL THE GROUPS@NUS.EDU.SG EMAILS BECOME SPAMMABLE
             if (!emailID.contains("gmail.com")){
@@ -57,19 +59,28 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please use a valid NUS email ID", Toast.LENGTH_LONG).show();
             }
 
-            else{ // Add user details to database
-                AppUser newUser = new AppUser();
-                newUser.createUser(displayName, emailID);
-                DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
-
-                mDocRef.set(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+            else{ // Add user details to database if new
+                db.collection("users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Log.d("DB","Successfully added new user");
-                        }
-                        else {
-                            Log.d("DB","Cannot add new user",task.getException());
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            if (!task.getResult().exists()){
+                                AppUser newUser = new AppUser();
+                                newUser.createUser(displayName, emailID);
+                                DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
+
+                                mDocRef.set(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Log.d("DB","Successfully added new user");
+                                        }
+                                        else {
+                                            Log.d("DB","Cannot add new user",task.getException());
+                                        }
+                                    }
+                                });
+                            }
                         }
                     }
                 });

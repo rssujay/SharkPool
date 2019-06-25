@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                      int count = 0;
                     @Override
                     public void onClick(View v) {
-                        if (FirebaseAuth.getInstance().getUid() == null){
+                        if (FirebaseAuth.getInstance().getCurrentUser() == null){
                             Intent intent = new Intent(v.getContext(), LoginActivity.class);
                             startActivity(intent);
                         }

@@ -185,6 +185,18 @@ public class BorrowRequest {
     public Date getStartDate() {
         return startDate;
     }
+
+    public void setLenderName(String lenderName) {
+        this.lenderName = lenderName;
+    }
+
+    public void setLenderUID(String lenderUID) {
+        this.lenderUID = lenderUID;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
 
 

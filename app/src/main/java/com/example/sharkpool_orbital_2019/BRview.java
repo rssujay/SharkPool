@@ -2,13 +2,16 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,8 +28,6 @@ public class BRview extends AppCompatActivity {
     private boolean userIsBorrower;
 
     private BorrowRequest request = new BorrowRequest();
-    private AppUser borrower = new AppUser();
-    private AppUser lender = new AppUser();
 
     //Elements
     private TextView requestUID;
@@ -154,6 +155,29 @@ public class BRview extends AppCompatActivity {
                 db.collection("users").document(request.getBorrowerUID()).update("requests", FieldValue.arrayRemove(request.getRequestID()));
                 Intent intent = new Intent(getBaseContext(), MainMenu.class);
                 startActivity(intent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
+    public void becomeLender(View v){
+        db.collection("users").document(userUID).update("requests",FieldValue.arrayUnion(request.getRequestID())).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                db.collection("requests").document(request.getRequestID()).update(
+                        "lenderName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
+                        "lenderUID", userUID, "status", "Closed");
+                Intent intent = new Intent(getBaseContext(), MainMenu.class);
+                startActivity(intent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
             }
         });
     }

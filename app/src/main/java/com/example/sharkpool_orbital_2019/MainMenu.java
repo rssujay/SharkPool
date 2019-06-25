@@ -162,13 +162,13 @@ public class MainMenu extends AppCompatActivity
                             selectedFragment = new HistoryFragment();
                             break;
                         case R.id.requests:
-                            selectedFragment = new RequestsFragment();
+                            selectedFragment = new OngoingRequestsFragment();
                             break;
                         case R.id.profile:
                             selectedFragment = new LendlistFragment();
                             break;
                         default:
-                            selectedFragment = new RequestsFragment();
+                            selectedFragment = new OngoingRequestsFragment();
                     }
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container,
