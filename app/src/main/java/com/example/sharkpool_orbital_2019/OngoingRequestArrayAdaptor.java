@@ -108,7 +108,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
                 break;
 
             case "Lent/Borrowed":
-                holder.reqStatus.setTextColor(Color.YELLOW);
+                holder.reqStatus.setTextColor(Color.BLUE);
                 break;
 
             default:

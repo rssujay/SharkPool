@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -43,9 +44,12 @@ public class BRview extends AppCompatActivity {
     private TextView startDate;
     private TextView returnDate;
     private EditText codeEntry;
+
+    private Button submitCode;
     private Button becomeLend;
     private Button deleteReq;
     private Button cancelLend;
+    private Button dispute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,8 @@ public class BRview extends AppCompatActivity {
         becomeLend = findViewById(R.id.becomeLender);
         deleteReq = findViewById(R.id.borrowCancel);
         cancelLend = findViewById(R.id.lendCancel);
+        dispute = findViewById(R.id.dispute);
+        submitCode = findViewById(R.id.submitCode);
 
         Bundle bundle = getIntent().getExtras();
         final String requestID = bundle.getString("initiator");
@@ -112,36 +118,38 @@ public class BRview extends AppCompatActivity {
                     codeTwo.append(Integer.toString(request.getLendCodeTwo()));
                 }
 
-                if (request.getStatus().equals("Borrowed")){
-                    status.setTextColor(Color.YELLOW);
-                    TimeZone asiaSingapore = TimeZone.getTimeZone("Asia/Singapore");
-                    Calendar nowAsiaSingapore = Calendar.getInstance(asiaSingapore);
-                    nowAsiaSingapore.setTime(request.getStartDate());
-                    startDate.append(nowAsiaSingapore.toString());
-                }
+                // Status specific code
+                switch (request.getStatus()){
+                    case "Open":
+                        // Allow borrower to delete request
+                        if (userIsBorrower){
+                            deleteReq.setEnabled(true);
+                        }
+                        //Enable become lender for potential lender
+                        else{
+                            becomeLend.setVisibility(View.VISIBLE);
+                        }
+                        break;
 
-                if (request.getStatus().equals("Completed")){
-                    status.setTextColor(Color.GREEN);
-                    TimeZone asiaSingapore = TimeZone.getTimeZone("Asia/Singapore");
-                    Calendar nowAsiaSingapore = Calendar.getInstance(asiaSingapore);
-                    nowAsiaSingapore.setTime(request.getReturnDate());
-                    startDate.append(nowAsiaSingapore.toString());
-                }
+                    case "Closed":
+                        //Allow lender to cancel lending
+                        if (!userIsBorrower){
+                            cancelLend.setEnabled(true);
+                        }
+                        submitCode.setEnabled(true);
+                        break;
 
-                // Allow borrower to delete request
-                String currStatus = request.getStatus();
-                if ((currStatus.equals("Open")) && userIsBorrower){
-                    deleteReq.setEnabled(true);
-                }
+                    case "Lent/Borrowed":
+                        startDate.append(request.getStartDate().toString());
+                        submitCode.setText("Confirm Return");
+                        submitCode.setEnabled(true);
+                        dispute.setEnabled(true);
+                        break;
 
-                //Enable become lender for potential lender
-                if (currStatus.equals("Open") && !userIsBorrower){
-                    becomeLend.setVisibility(View.VISIBLE);
-                }
-
-                //Allow lender to cancel lending
-                if (currStatus.equals("Closed") && !userIsBorrower){
-                    cancelLend.setEnabled(true);
+                    default: // Completed
+                        startDate.append(request.getStartDate().toString());
+                        returnDate.append(request.getReturnDate().toString());
+                        dispute.setEnabled(true);
                 }
             }
         });
@@ -180,5 +188,57 @@ public class BRview extends AppCompatActivity {
                 Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
             }
         });
+    }
+
+    public void checkCode(View v){
+        String enteredCode = codeEntry.getText().toString();
+        // Initial codes
+        if (request.getStatus().equals("Closed")){
+            String correctCode = Integer.toString(request.getLendCodeOne()).concat(Integer.toString(request.getBorrowCodeOne()));
+
+            if (enteredCode.equals(correctCode)){
+                db.collection("requests").document(request.getRequestID()).update(
+                        "status","Lent/Borrowed","startDate", Timestamp.now())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Intent intent = new Intent(getBaseContext(),MainMenu.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            else{
+                Toast.makeText(getBaseContext(),"Incorrect code entered, please try again.",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        // Return codes
+        else if (request.getStatus().equals("Lent/Borrowed")){
+            String correctCode = Integer.toString(request.getLendCodeTwo()).concat(Integer.toString(request.getBorrowCodeTwo()));
+
+            if (enteredCode.equals(correctCode)){
+                db.collection("requests").document(request.getRequestID()).update(
+                        "status","Completed","returnDate",Timestamp.now())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("users").document(request.getLenderUID())
+                                .update("credits",FieldValue.increment(request.getCreditValue())).addOnSuccessListener(
+                                new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Intent intent = new Intent(getBaseContext(),MainMenu.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                        );
+                    }
+                });
+            }
+            else{
+                Toast.makeText(getBaseContext(),"Incorrect code entered, please try again.",Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
