@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.sendbird.android.SendBird;
+import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -21,8 +24,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Proceed to main menu immediately if email verified and logged in
          if (FirebaseAuth.getInstance().getUid() != null && FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()){
-            Intent intent = new Intent(this, MainMenu.class);
-            startActivity(intent);
+             SendBird.connect(FirebaseAuth.getInstance().getUid(), new SendBird.ConnectHandler() {
+                 @Override
+                 public void onConnected(User user, SendBirdException e) {
+                     if (e != null){ //error
+                         return; //TODO: error handling
+                     }
+                 }
+             });
+             Intent intent = new Intent(this, MainMenu.class);
+             startActivity(intent);
          }
 
          signIn.setOnClickListener(

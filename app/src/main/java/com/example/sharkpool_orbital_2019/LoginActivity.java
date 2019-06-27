@@ -14,6 +14,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.sendbird.android.SendBird;
+import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,11 +54,14 @@ public class LoginActivity extends AppCompatActivity {
             final String emailID = FirebaseAuth.getInstance().getCurrentUser().getEmail();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+            connectToSendBird(uid); //creates new SendBird user
+
             //CHANGE TO "u.nus.edu" in live version - MAKE SURE THE "u" IS THERE OTHERWISE ALL THE GROUPS@NUS.EDU.SG EMAILS BECOME SPAMMABLE
             if (!emailID.contains("gmail.com")){
                 FirebaseAuth.getInstance().getCurrentUser().delete();
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "Please use a valid NUS email ID", Toast.LENGTH_LONG).show();
+                //TODO: deletion of SendBird user
             }
 
             else{ // Add user details to database if new
@@ -73,6 +79,15 @@ public class LoginActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
                                             Log.d("DB","Successfully added new user");
+                                            // Adding of nickname to SendBird database
+                                            SendBird.updateCurrentUserInfo(displayName, null, new SendBird.UserInfoUpdateHandler() {
+                                                @Override
+                                                public void onUpdated(SendBirdException e) {
+                                                    if (e != null) {    // Error.
+                                                        return; //TODO: error handling
+                                                    }
+                                                }
+                                            });
                                         }
                                         else {
                                             Log.d("DB","Cannot add new user",task.getException());
@@ -84,9 +99,25 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
             }
+            /*
+            TODO:
+
+            SendBird integration (automatic authentication with Firebase UID)
+             */
 
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+    }
+    private void connectToSendBird(String UID){
+        SendBird.connect(UID, new SendBird.ConnectHandler() {
+            @Override
+            public void onConnected(User user, SendBirdException e) {
+                if (e != null){ //error
+                    return; //TODO: error handling
+                }
+            }
+        });
+
     }
 }
