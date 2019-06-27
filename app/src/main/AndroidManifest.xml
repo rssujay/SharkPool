@@ -19,6 +19,7 @@
             <activity android:name=".BRview"></activity>
             <activity android:name=".tocPage" />
             <activity android:name=".BorrowRequestCreation" />
+            <activity android:name=".logDispute"></activity>
             <activity
                 android:name=".MainMenu"
                 android:label="@string/title_activity_main_menu"
@@ -28,9 +29,9 @@
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
 
-                    <category android:name="android.intent.category.LAUNCHER" />
-                </intent-filter>
-            </activity>
-        </application>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
-    </manifest>
+</manifest>

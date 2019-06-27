@@ -112,7 +112,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
                 break;
 
             default:
-                holder.reqStatus.setTextColor(Color.BLACK);
+                holder.reqStatus.setTextColor(Color.RED);
         }
     }
 

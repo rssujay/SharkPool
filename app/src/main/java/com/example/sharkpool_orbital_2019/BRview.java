@@ -19,9 +19,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 public class BRview extends AppCompatActivity {
     //Meta
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -240,5 +237,11 @@ public class BRview extends AppCompatActivity {
                 Toast.makeText(getBaseContext(),"Incorrect code entered, please try again.",Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public void startDispute(View v){
+        Intent intent = new Intent(getBaseContext(),logDispute.class);
+        intent.putExtra("BRid",request.getRequestID());
+        startActivity(intent);
     }
 }

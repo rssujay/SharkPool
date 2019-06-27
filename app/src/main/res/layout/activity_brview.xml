@@ -270,6 +270,7 @@
             android:layout_height="wrap_content"
             android:text="Open Dispute"
             android:enabled="false"
+            android:onClick="startDispute"
 
             app:layout_constraintTop_toBottomOf="@+id/returnDate"
             app:layout_constraintEnd_toStartOf="@id/lendCancel"
