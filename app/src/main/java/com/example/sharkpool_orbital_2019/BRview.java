@@ -47,6 +47,7 @@ public class BRview extends AppCompatActivity {
     private Button deleteReq;
     private Button cancelLend;
     private Button dispute;
+    private Button chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class BRview extends AppCompatActivity {
         cancelLend = findViewById(R.id.lendCancel);
         dispute = findViewById(R.id.dispute);
         submitCode = findViewById(R.id.submitCode);
+        chat = findViewById(R.id.chatButton);
 
         Bundle bundle = getIntent().getExtras();
         final String requestID = bundle.getString("initiator");
@@ -242,6 +244,22 @@ public class BRview extends AppCompatActivity {
     public void startDispute(View v){
         Intent intent = new Intent(getBaseContext(),logDispute.class);
         intent.putExtra("BRid",request.getRequestID());
+        startActivity(intent);
+    }
+
+    public void startChat(View v){
+        if (request.getStatus() == "Open" && userIsBorrower){
+            Toast.makeText(getBaseContext(), "No chat to be opened.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent intent = new Intent(getBaseContext(),ChatActivity.class);
+        String otherID;
+        if (userIsBorrower){
+            otherID = request.getLenderUID();
+        } else {
+            otherID = request.getBorrowerUID();
+        }
+        intent.putExtra("otherID", otherID);
         startActivity(intent);
     }
 }
