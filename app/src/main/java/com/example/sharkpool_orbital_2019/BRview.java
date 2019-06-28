@@ -189,6 +189,24 @@ public class BRview extends AppCompatActivity {
         });
     }
 
+    public void cancelLender(View v){
+        db.collection("users").document(userUID).update("requests",FieldValue.arrayRemove(request.getRequestID())).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                db.collection("requests").document(request.getRequestID()).update(
+                        "lenderName", "",
+                        "lenderUID", "", "status", "Open");
+                Intent intent = new Intent(getBaseContext(), MainMenu.class);
+                startActivity(intent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
     public void checkCode(View v){
         String enteredCode = codeEntry.getText().toString();
         // Initial codes

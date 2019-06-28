@@ -262,6 +262,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="40dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:onClick="cancelLender"
             />
 
         <Button
