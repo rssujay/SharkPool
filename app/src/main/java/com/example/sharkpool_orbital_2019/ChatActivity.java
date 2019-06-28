@@ -3,11 +3,14 @@ package com.example.sharkpool_orbital_2019;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -19,6 +22,9 @@ public class ChatActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+    private RecyclerView mMessageRecycler;
+    private MessageListAdapter mMessageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +51,12 @@ public class ChatActivity extends AppCompatActivity {
         //Temporary test message to test for channel creation
         Toast.makeText(getApplicationContext(), "Channel successfully created!", Toast.LENGTH_LONG).show();
 
+        //TODO: retrieving list of messages
+
         setContentView(R.layout.activity_chat);
+        mMessageRecycler = findViewById(R.id.reyclerview_message_list);
+       // mMessageAdapter = new MessageListAdapter(this, messageList); //TODO
+        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
