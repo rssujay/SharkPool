@@ -118,6 +118,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
 
             case "Completed":
                 holder.reqStatus.setTextColor(Color.GREEN);
+                break;
 
             default:
                 holder.reqStatus.setTextColor(Color.RED);

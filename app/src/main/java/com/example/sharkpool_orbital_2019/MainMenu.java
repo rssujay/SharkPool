@@ -96,6 +96,10 @@ public class MainMenu extends AppCompatActivity
         newRequest.initialize("test_id","Pen");
         requestArrayAdaptor.add(newRequest);
         */
+        Fragment selectedFragment = null;
+        selectedFragment = new HistoryFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container,
+                selectedFragment).commit();
     }
 
     @Override

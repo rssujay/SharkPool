@@ -23,6 +23,7 @@ import java.util.Vector;
 
 public class OngoingRequestsFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     private RecyclerView recyclerView;
     private Vector<BorrowRequest> ongoingRequests = new Vector<>();
@@ -37,24 +38,69 @@ public class OngoingRequestsFragment extends Fragment {
         //Populate
         CollectionReference collRef = db.collection("requests");
 
-        collRef.orderBy("createdDate", Query.Direction.ASCENDING).limit(10).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    // If BR is not completed and user is either borrower/lender
-                    if (
-                            !(document.get("status").equals("Completed")) &&
-                            (document.get("borrowerUID").equals(userUID)||(document.get("lenderUID").equals(userUID)))) {
-                        ongoingRequests.add(document.toObject(BorrowRequest.class));
+        //Query 1a
+        collRef.orderBy("status", Query.Direction.ASCENDING)
+                .whereEqualTo("borrowerUID",userUID)
+                .whereLessThan("status", "Completed")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            ongoingRequests.add(document.toObject(BorrowRequest.class));
+                        }
                     }
-                }
-                OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
-                recyclerView.setAdapter(mData);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-            }
-        });
+                });
+
+        //Query 1b
+        collRef.orderBy("status", Query.Direction.ASCENDING)
+                .whereEqualTo("borrowerUID",userUID)
+                .whereGreaterThan("status", "Completed")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            ongoingRequests.add(document.toObject(BorrowRequest.class));
+                        }
+                    }
+                });
+
+        //Query 2a
+        collRef.orderBy("status", Query.Direction.ASCENDING)
+                .whereEqualTo("lenderUID",userUID)
+                .whereLessThan("status", "Completed")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            ongoingRequests.add(document.toObject(BorrowRequest.class));
+                        }
+
+                        OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
+                        recyclerView.setAdapter(mData);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    }
+                });
+
+        //Query 2b
+        collRef.orderBy("status", Query.Direction.ASCENDING)
+                .whereEqualTo("lenderUID",userUID)
+                .whereGreaterThan("status", "Completed")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            ongoingRequests.add(document.toObject(BorrowRequest.class));
+                        }
+
+                        OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
+                        recyclerView.setAdapter(mData);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    }
+                });
 
         return rootView;
     }
