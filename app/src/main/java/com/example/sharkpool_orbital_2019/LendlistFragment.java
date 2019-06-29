@@ -33,7 +33,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class LendlistFragment extends Fragment {
@@ -121,13 +123,31 @@ public class LendlistFragment extends Fragment {
             public void onClick(View v) {
                 submitBar.setVisibility(View.VISIBLE);
                 MyItem newItem = new MyItem();
-                newItem.initialize(myNewItemNameEntry.getText().toString(),myNewItemTypeEntry.getText().toString());
+                String itemName = myNewItemNameEntry.getText().toString();
+                final String itemType = myNewItemTypeEntry.getText().toString();
+
+                if(itemName.isEmpty() || itemType.isEmpty()){
+                    popupWindow.dismiss();
+                    submitBar.setVisibility(View.INVISIBLE);
+                    return;
+                }
+
+                newItem.initialize(itemName,itemType);
                 db.collection("users").document(uid).collection("lendList").document(newItem.getUUID()).set(newItem).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        submitBar.setVisibility(View.INVISIBLE);
-                        myNewItemNameEntry.setText("");
-                        myNewItemTypeEntry.setText("");
+                        Map<String, Boolean> temp = new HashMap<>();
+                        temp.put("exists",true);
+
+                        db.collection("itemTypes").document(itemType).set(temp).addOnSuccessListener(
+                                new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        submitBar.setVisibility(View.INVISIBLE);
+                                        popupWindow.dismiss();
+                                    }
+                                }
+                        );
                     }
                 });
             }
