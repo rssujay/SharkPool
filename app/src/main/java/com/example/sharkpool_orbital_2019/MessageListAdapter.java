@@ -49,7 +49,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     // Inflates the appropriate layout according to the ViewType.
-    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
@@ -87,8 +86,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         SentMessageHolder(View itemView) {
             super(itemView);
 
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
+            messageText = (TextView) itemView.findViewById(R.id.text_message_body_sent);
+            timeText = (TextView) itemView.findViewById(R.id.text_message_time_sent);
         }
 
         void bind(UserMessage message) {
@@ -101,7 +100,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText, nameText;
+        TextView messageText, timeText;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);

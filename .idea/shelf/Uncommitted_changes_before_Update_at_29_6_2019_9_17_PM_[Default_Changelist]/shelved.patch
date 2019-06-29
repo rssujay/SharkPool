@@ -1,0 +1,428 @@
+Index: app/src/main/res/layout/item_message_sent.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n\r\n<android.support.constraint.ConstraintLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"wrap_content\"\r\n    android:paddingTop=\"8dp\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/text_message_body\"\r\n        android:text=\"hello, hello!\"\r\n        android:background=\"@drawable/rounded_rectangle_white\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:maxWidth=\"240dp\"\r\n        android:padding=\"8dp\"\r\n        android:textColor=\"#000000\"\r\n        android:layout_marginRight=\"8dp\"\r\n        app:layout_constraintRight_toRightOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    <TextView\r\n        android:id=\"@+id/text_message_time\"\r\n        android:text=\"11:40\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:textSize=\"10sp\"\r\n        android:layout_marginRight=\"4dp\"\r\n        app:layout_constraintBottom_toBottomOf=\"@+id/text_message_body\"\r\n        app:layout_constraintRight_toLeftOf=\"@+id/text_message_body\" />\r\n\r\n</android.support.constraint.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/item_message_sent.xml	(revision 1e2afddfe5138efd82fa4706b524ddc71d851830)
++++ app/src/main/res/layout/item_message_sent.xml	(date 1561812483077)
+@@ -9,7 +9,7 @@
+     android:paddingTop="8dp">
+ 
+     <TextView
+-        android:id="@+id/text_message_body"
++        android:id="@+id/text_message_body_sent"
+         android:text="hello, hello!"
+         android:background="@drawable/rounded_rectangle_white"
+         android:layout_width="wrap_content"
+@@ -22,13 +22,13 @@
+         app:layout_constraintTop_toTopOf="parent" />
+ 
+     <TextView
+-        android:id="@+id/text_message_time"
++        android:id="@+id/text_message_time_sent"
+         android:text="11:40"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textSize="10sp"
+         android:layout_marginRight="4dp"
+-        app:layout_constraintBottom_toBottomOf="@+id/text_message_body"
+-        app:layout_constraintRight_toLeftOf="@+id/text_message_body" />
++        app:layout_constraintBottom_toBottomOf="@+id/text_message_body_sent"
++        app:layout_constraintRight_toLeftOf="@+id/text_message_body_sent" />
+ 
+ </android.support.constraint.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/sharkpool_orbital_2019/ChatActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.sharkpool_orbital_2019;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.support.v7.app.AppCompatActivity;\r\nimport android.support.v7.widget.LinearLayoutManager;\r\nimport android.support.v7.widget.RecyclerView;\r\nimport android.widget.Toast;\r\n\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.sendbird.android.GroupChannel;\r\nimport com.sendbird.android.OpenChannel;\r\nimport com.sendbird.android.SendBird;\r\nimport com.sendbird.android.SendBirdException;\r\nimport com.sendbird.android.User;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class ChatActivity extends AppCompatActivity {\r\n\r\n    FirebaseFirestore db = FirebaseFirestore.getInstance();\r\n    final String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();\r\n\r\n    private RecyclerView mMessageRecycler;\r\n    private MessageListAdapter mMessageAdapter;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        Bundle bundle = getIntent().getExtras();\r\n        final String otherUID = bundle.getString(\"otherID\");\r\n        List<String> ChatUIDs = new ArrayList<>();\r\n        ChatUIDs.add(userUID);\r\n        ChatUIDs.add(otherUID);\r\n        //Double-checks whether user is connected to SendBird\r\n\r\n        if (SendBird.getConnectionState() != SendBird.ConnectionState.OPEN){\r\n            SendBird.connect(FirebaseAuth.getInstance().getUid(), new SendBird.ConnectHandler() {\r\n                @Override\r\n                public void onConnected(User user, SendBirdException e) {\r\n                    if (e != null){ //error\r\n                        return; //Toast.makeText(getApplicationContext(), \"Failed to connect to messaging service. Check your connection and try again.\", Toast.LENGTH_LONG).show();\r\n                    }\r\n                }\r\n            });\r\n        }\r\n\r\n        createGroupChannel(ChatUIDs); //creates 1-on-1 channel; goes to previously created one if already created\r\n        //Temporary test message to test for channel creation\r\n        Toast.makeText(getApplicationContext(), \"Channel successfully created!\", Toast.LENGTH_LONG).show();\r\n\r\n        //TODO: retrieving list of messages\r\n\r\n        setContentView(R.layout.activity_chat);\r\n        mMessageRecycler = findViewById(R.id.reyclerview_message_list);\r\n       // mMessageAdapter = new MessageListAdapter(this, messageList); //TODO\r\n        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));\r\n\r\n    }\r\n\r\n    private void createGroupChannel(List<String> ChatUIDs){\r\n        GroupChannel.createChannelWithUserIds(ChatUIDs, true, new GroupChannel.GroupChannelCreateHandler() {\r\n            @Override\r\n            public void onResult(GroupChannel groupChannel, SendBirdException e) {\r\n                if (e != null) {\r\n                    // Error!\r\n                    return;\r\n                }\r\n\r\n                Intent intent = new Intent();\r\n                setResult(RESULT_OK, intent);\r\n                //finish();\r\n            }\r\n        });\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/sharkpool_orbital_2019/ChatActivity.java	(revision 1e2afddfe5138efd82fa4706b524ddc71d851830)
++++ app/src/main/java/com/example/sharkpool_orbital_2019/ChatActivity.java	(date 1561813996296)
+@@ -1,6 +1,5 @@
+ package com.example.sharkpool_orbital_2019;
+ 
+-import android.content.Intent;
+ import android.os.Bundle;
+ import android.support.v7.app.AppCompatActivity;
+ import android.support.v7.widget.LinearLayoutManager;
+@@ -9,11 +8,14 @@
+ 
+ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.firestore.FirebaseFirestore;
++import com.sendbird.android.BaseChannel;
++import com.sendbird.android.BaseMessage;
+ import com.sendbird.android.GroupChannel;
+-import com.sendbird.android.OpenChannel;
++import com.sendbird.android.PreviousMessageListQuery;
+ import com.sendbird.android.SendBird;
+ import com.sendbird.android.SendBirdException;
+ import com.sendbird.android.User;
++import com.sendbird.android.UserMessage;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -23,8 +25,13 @@
+     FirebaseFirestore db = FirebaseFirestore.getInstance();
+     final String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+ 
++    private String mChannelURL;
++    private PreviousMessageListQuery previousMessageListQuery;
++    private List<BaseMessage> messageList = new ArrayList<>();
++
+     private RecyclerView mMessageRecycler;
+-    private MessageListAdapter mMessageAdapter;
++    private ChatAdapter mMessageAdapter;
++    private LinearLayoutManager mLayoutManager;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -41,7 +48,8 @@
+                 @Override
+                 public void onConnected(User user, SendBirdException e) {
+                     if (e != null){ //error
+-                        return; //Toast.makeText(getApplicationContext(), "Failed to connect to messaging service. Check your connection and try again.", Toast.LENGTH_LONG).show();
++                        Toast.makeText(getApplicationContext(), "Failed to connect to messaging service. Check your connection and try again.", Toast.LENGTH_SHORT).show();
++                        return;
+                     }
+                 }
+             });
+@@ -49,14 +57,65 @@
+ 
+         createGroupChannel(ChatUIDs); //creates 1-on-1 channel; goes to previously created one if already created
+         //Temporary test message to test for channel creation
+-        Toast.makeText(getApplicationContext(), "Channel successfully created!", Toast.LENGTH_LONG).show();
++        Toast.makeText(getApplicationContext(), "Channel successfully created!", Toast.LENGTH_SHORT).show();
+ 
+         //TODO: retrieving list of messages
+ 
++        //Need to search for channel since we do not have the chat URL
++
++
++
++        mChannelURL = "sendbird_group_channel_124131094_8135440ea76a101be52fd7d3a7e4c8018e788081";
++
++        GroupChannel.getChannel(mChannelURL, new GroupChannel.GroupChannelGetHandler() {
++            @Override
++            public void onResult(GroupChannel groupChannel, SendBirdException e) {
++                if (e != null){ //error
++                    Toast.makeText(getApplicationContext(), "Channel getting error!", Toast.LENGTH_LONG).show();
++                    return;
++                }
++
++                groupChannel.sendUserMessage("hello there", new BaseChannel.SendUserMessageHandler() {
++                    @Override
++                    public void onSent(UserMessage userMessage, SendBirdException e) {
++                        if (e != null) { //error
++                            Toast.makeText(getApplicationContext(), "Message sending error!", Toast.LENGTH_LONG).show();
++                            return;
++                        }
++                        Toast.makeText(getApplicationContext(), "Message sending success!", Toast.LENGTH_SHORT).show();
++                    }
++                });
++
++                mMessageAdapter = new ChatAdapter(groupChannel);
++
++                /*
++                previousMessageListQuery = groupChannel.createPreviousMessageListQuery();
++                previousMessageListQuery.load(50, false, new PreviousMessageListQuery.MessageListQueryResult() {
++                    @Override
++                    public void onResult(List<BaseMessage> list, SendBirdException e) {
++                        if (e != null){
++                            Toast.makeText(getApplicationContext(), "Message retrieval error!", Toast.LENGTH_LONG).show();
++                            return;
++                        }
++                        Toast.makeText(getApplicationContext(), "Message retrieval success!", Toast.LENGTH_LONG).show();
++                        messageList.addAll(list);
++                        mMessageAdapter.notifyDataSetChanged();
++                    }
++                });
++                */
++
++            }
++        });
++
++
+         setContentView(R.layout.activity_chat);
+-        mMessageRecycler = findViewById(R.id.reyclerview_message_list);
+-       // mMessageAdapter = new MessageListAdapter(this, messageList); //TODO
+-        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
++        mMessageRecycler = (RecyclerView) findViewById(R.id.recyclerview_message_list);
++        //mMessageAdapter = new MessageListAdapter(this, messageList); //TODO
++
++        mLayoutManager = new LinearLayoutManager(this);
++        mLayoutManager.setReverseLayout(true);
++        mMessageRecycler.setAdapter(mMessageAdapter);
++        mMessageRecycler.setLayoutManager(mLayoutManager);
+ 
+     }
+ 
+@@ -69,8 +128,9 @@
+                     return;
+                 }
+ 
+-                Intent intent = new Intent();
+-                setResult(RESULT_OK, intent);
++                //Intent intent = new Intent();
++                //setResult(RESULT_OK, intent);
++                mChannelURL = groupChannel.getUrl();
+                 //finish();
+             }
+         });
+Index: app/src/main/java/com/example/sharkpool_orbital_2019/MessageListAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.sharkpool_orbital_2019;\r\n\r\n\r\nimport android.content.Context;\r\nimport android.support.annotation.NonNull;\r\nimport android.support.v7.widget.RecyclerView;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.TextView;\r\n\r\nimport com.sendbird.android.BaseMessage;\r\nimport com.sendbird.android.SendBird;\r\nimport com.sendbird.android.UserMessage;\r\n\r\nimport java.text.SimpleDateFormat;\r\nimport java.util.List;\r\nimport java.util.Locale;\r\n\r\npublic class MessageListAdapter extends RecyclerView.Adapter {\r\n    private static final int VIEW_TYPE_MESSAGE_SENT = 1;\r\n    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;\r\n\r\n    private Context mContext;\r\n    private List<BaseMessage> mMessageList;\r\n\r\n    public MessageListAdapter(Context context, List<BaseMessage> messageList) {\r\n        mContext = context;\r\n        mMessageList = messageList;\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return mMessageList.size();\r\n    }\r\n\r\n    // Determines the appropriate ViewType according to the sender of the message.\r\n    @Override\r\n    public int getItemViewType(int position) {\r\n        UserMessage message = (UserMessage) mMessageList.get(position);\r\n\r\n        if (message.getSender().getUserId().equals(SendBird.getCurrentUser().getUserId())) {\r\n            // If the current user is the sender of the message\r\n            return VIEW_TYPE_MESSAGE_SENT;\r\n        } else {\r\n            // If some other user sent the message\r\n            return VIEW_TYPE_MESSAGE_RECEIVED;\r\n        }\r\n    }\r\n\r\n    // Inflates the appropriate layout according to the ViewType.\r\n    @NonNull\r\n    @Override\r\n    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {\r\n        View view;\r\n\r\n        if (viewType == VIEW_TYPE_MESSAGE_SENT) {\r\n            view = LayoutInflater.from(parent.getContext())\r\n                    .inflate(R.layout.item_message_sent, parent, false);\r\n            return new SentMessageHolder(view);\r\n        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {\r\n            view = LayoutInflater.from(parent.getContext())\r\n                    .inflate(R.layout.item_message_received, parent, false);\r\n            return new ReceivedMessageHolder(view);\r\n        }\r\n\r\n        return null;\r\n    }\r\n\r\n    // Passes the message object to a ViewHolder so that the contents can be bound to UI.\r\n    @Override\r\n    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {\r\n        UserMessage message = (UserMessage) mMessageList.get(position);\r\n\r\n        switch (holder.getItemViewType()) {\r\n            case VIEW_TYPE_MESSAGE_SENT:\r\n                ((SentMessageHolder) holder).bind(message);\r\n                break;\r\n            case VIEW_TYPE_MESSAGE_RECEIVED:\r\n                ((ReceivedMessageHolder) holder).bind(message);\r\n        }\r\n    }\r\n\r\n    private class SentMessageHolder extends RecyclerView.ViewHolder {\r\n        TextView messageText, timeText;\r\n\r\n        SentMessageHolder(View itemView) {\r\n            super(itemView);\r\n\r\n            messageText = (TextView) itemView.findViewById(R.id.text_message_body);\r\n            timeText = (TextView) itemView.findViewById(R.id.text_message_time);\r\n        }\r\n\r\n        void bind(UserMessage message) {\r\n            messageText.setText(message.getMessage());\r\n\r\n            // Format the stored timestamp into a readable String using method.\r\n            SimpleDateFormat dateFormat = new SimpleDateFormat(\"HH:mm\", Locale.getDefault());\r\n            timeText.setText(dateFormat.format(message.getCreatedAt()));\r\n        }\r\n    }\r\n\r\n    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {\r\n        TextView messageText, timeText, nameText;\r\n\r\n        ReceivedMessageHolder(View itemView) {\r\n            super(itemView);\r\n\r\n            messageText = (TextView) itemView.findViewById(R.id.text_message_body);\r\n            timeText = (TextView) itemView.findViewById(R.id.text_message_time);\r\n        }\r\n\r\n        void bind(UserMessage message) {\r\n            messageText.setText(message.getMessage());\r\n\r\n            // Format the stored timestamp into a readable String using method.\r\n\r\n            SimpleDateFormat dateFormat = new SimpleDateFormat(\"HH:mm\", Locale.getDefault());\r\n            timeText.setText(dateFormat.format(message.getCreatedAt()));\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/sharkpool_orbital_2019/MessageListAdapter.java	(revision 1e2afddfe5138efd82fa4706b524ddc71d851830)
++++ app/src/main/java/com/example/sharkpool_orbital_2019/MessageListAdapter.java	(date 1561813813504)
+@@ -49,7 +49,6 @@
+     }
+ 
+     // Inflates the appropriate layout according to the ViewType.
+-    @NonNull
+     @Override
+     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+         View view;
+@@ -87,8 +86,8 @@
+         SentMessageHolder(View itemView) {
+             super(itemView);
+ 
+-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
+-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
++            messageText = (TextView) itemView.findViewById(R.id.text_message_body_sent);
++            timeText = (TextView) itemView.findViewById(R.id.text_message_time_sent);
+         }
+ 
+         void bind(UserMessage message) {
+@@ -101,7 +100,7 @@
+     }
+ 
+     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+-        TextView messageText, timeText, nameText;
++        TextView messageText, timeText;
+ 
+         ReceivedMessageHolder(View itemView) {
+             super(itemView);
+Index: app/src/main/java/com/example/sharkpool_orbital_2019/ChatAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/sharkpool_orbital_2019/ChatAdapter.java	(date 1561813813484)
++++ app/src/main/java/com/example/sharkpool_orbital_2019/ChatAdapter.java	(date 1561813813484)
+@@ -0,0 +1,185 @@
++package com.example.sharkpool_orbital_2019;
++
++import android.support.v7.widget.RecyclerView;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.TextView;
++
++import com.sendbird.android.BaseChannel;
++import com.sendbird.android.BaseMessage;
++import com.sendbird.android.GroupChannel;
++import com.sendbird.android.SendBird;
++import com.sendbird.android.SendBirdException;
++import com.sendbird.android.UserMessage;
++
++import java.text.SimpleDateFormat;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Locale;
++
++public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
++    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
++    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
++
++    private ArrayList<BaseMessage> mMessageList;
++    private GroupChannel mChannel;
++
++    ChatAdapter(GroupChannel channel) {
++        mMessageList = new ArrayList<>();
++        mChannel = channel;
++
++        refresh();
++    }
++
++    // Retrieves 30 most recent messages.
++    void refresh() {
++        mChannel.getPreviousMessagesByTimestamp(Long.MAX_VALUE, true, 30, true,
++                BaseChannel.MessageTypeFilter.USER, null, new BaseChannel.GetMessagesHandler() {
++                    @Override
++                    public void onResult(List<BaseMessage> list, SendBirdException e) {
++                        if (e != null) {
++                            e.printStackTrace();
++                            return;
++                        }
++                        mMessageList = (ArrayList<BaseMessage>) list;
++
++                        notifyDataSetChanged();
++
++                    }
++                });
++
++    }
++
++    void loadPreviousMessages() {
++        final long lastTimestamp = mMessageList.get(mMessageList.size() - 1).getCreatedAt();
++        mChannel.getPreviousMessagesByTimestamp(lastTimestamp, false, 30, true,
++                BaseChannel.MessageTypeFilter.USER, null, new BaseChannel.GetMessagesHandler() {
++                    @Override
++                    public void onResult(List<BaseMessage> list, SendBirdException e) {
++                        if (e != null) {
++                            e.printStackTrace();
++                            return;
++                        }
++                        mMessageList.addAll(list);
++
++                        notifyDataSetChanged();
++                    }
++                });
++    }
++
++    // Appends a new message to the beginning of the message list.
++    void appendMessage(UserMessage message) {
++        mMessageList.add(0, message);
++        notifyDataSetChanged();
++    }
++
++    // Sends a new message, and appends the sent message to the beginning of the message list.
++    void sendMessage(final String message) {
++        mChannel.sendUserMessage(message, new BaseChannel.SendUserMessageHandler() {
++            @Override
++            public void onSent(UserMessage userMessage, SendBirdException e) {
++                if (e != null) {
++                    e.printStackTrace();
++                    return;
++                }
++
++                mMessageList.add(0, userMessage);
++                notifyDataSetChanged();
++            }
++        });
++    }
++
++    // Determines the appropriate ViewType according to the sender of the message.
++    @Override
++    public int getItemViewType(int position) {
++        UserMessage message = (UserMessage) mMessageList.get(position);
++
++        if (message.getSender().getUserId().equals(SendBird.getCurrentUser().getUserId())) {
++            // If the current user is the sender of the message
++            return VIEW_TYPE_MESSAGE_SENT;
++        } else {
++            // If some other user sent the message
++            return VIEW_TYPE_MESSAGE_RECEIVED;
++        }
++    }
++
++    // Inflates the appropriate layout according to the ViewType.
++    @Override
++    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
++        View view;
++
++        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
++            view = LayoutInflater.from(parent.getContext())
++                    .inflate(R.layout.item_message_sent, parent, false);
++            return new SentMessageHolder(view);
++        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
++            view = LayoutInflater.from(parent.getContext())
++                    .inflate(R.layout.item_message_received, parent, false);
++            return new ReceivedMessageHolder(view);
++        }
++
++        return null;
++    }
++
++    // Passes the message object to a ViewHolder so that the contents can be bound to UI.
++    @Override
++    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
++        UserMessage message = (UserMessage) mMessageList.get(position);
++
++        switch (holder.getItemViewType()) {
++            case VIEW_TYPE_MESSAGE_SENT:
++                ((SentMessageHolder) holder).bind(message);
++                break;
++            case VIEW_TYPE_MESSAGE_RECEIVED:
++                ((ReceivedMessageHolder) holder).bind(message);
++        }
++    }
++
++    @Override
++    public int getItemCount() {
++        return mMessageList.size();
++    }
++
++    // Messages sent by me do not display a profile image or nickname.
++    private class SentMessageHolder extends RecyclerView.ViewHolder {
++        TextView messageText, timeText;
++
++        SentMessageHolder(View itemView) {
++            super(itemView);
++
++            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
++            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
++        }
++
++        void bind(UserMessage message) {
++            messageText.setText(message.getMessage());
++
++            // Format the stored timestamp into a readable String using method.
++            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
++            timeText.setText(dateFormat.format(message.getCreatedAt()));
++        }
++    }
++
++    // Messages sent by others display a profile image and nickname.
++    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
++        TextView messageText, timeText;
++
++        ReceivedMessageHolder(View itemView) {
++            super(itemView);
++
++            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
++            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
++        }
++
++        void bind(UserMessage message) {
++            messageText.setText(message.getMessage());
++            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
++            timeText.setText(dateFormat.format(message.getCreatedAt()));
++        }
++    }
++
++
++};
++
++
+Index: app/src/main/res/layout/activity_chat.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n\r\n<android.support.constraint.ConstraintLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\"com.sendbird.chattutorial.MessageListActivity\">\r\n\r\n    <android.support.v7.widget.RecyclerView\r\n        android:id=\"@+id/reyclerview_message_list\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"0dp\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintLeft_toLeftOf=\"parent\"\r\n        app:layout_constraintRight_toRightOf=\"parent\">\r\n    </android.support.v7.widget.RecyclerView>\r\n\r\n    <!-- A horizontal line between the chatbox and RecyclerView -->\r\n    <View\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"2dp\"\r\n        android:background=\"#dfdfdf\"\r\n        android:layout_marginBottom=\"0dp\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/layout_chatbox\"\r\n        app:layout_constraintLeft_toLeftOf=\"parent\"\r\n        app:layout_constraintRight_toRightOf=\"parent\"/>\r\n\r\n    <LinearLayout\r\n        android:id=\"@+id/layout_chatbox\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        android:minHeight=\"48dp\"\r\n        android:background=\"#ffffff\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintRight_toRightOf=\"parent\"\r\n        app:layout_constraintLeft_toLeftOf=\"parent\">\r\n\r\n        <EditText\r\n            android:id=\"@+id/edittext_chatbox\"\r\n            android:hint=\"Enter message\"\r\n            android:background=\"@android:color/transparent\"\r\n            android:layout_gravity=\"center\"\r\n            android:layout_marginLeft=\"16dp\"\r\n            android:layout_marginRight=\"16dp\"\r\n            android:layout_width=\"0dp\"\r\n            android:layout_weight=\"1\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:maxLines=\"6\"/>\r\n\r\n        <Button\r\n            android:id=\"@+id/button_chatbox_send\"\r\n            android:text=\"SEND\"\r\n            android:textSize=\"14dp\"\r\n            android:background=\"?attr/selectableItemBackground\"\r\n            android:clickable=\"true\"\r\n            android:layout_width=\"64dp\"\r\n            android:layout_height=\"48dp\"\r\n            android:gravity=\"center\"\r\n            android:layout_gravity=\"bottom\" />\r\n\r\n    </LinearLayout>\r\n\r\n</android.support.constraint.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_chat.xml	(revision 1e2afddfe5138efd82fa4706b524ddc71d851830)
++++ app/src/main/res/layout/activity_chat.xml	(date 1561813183481)
+@@ -5,11 +5,10 @@
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+-    android:layout_height="match_parent"
+-    tools:context="com.sendbird.chattutorial.MessageListActivity">
++    android:layout_height="match_parent">
+ 
+     <android.support.v7.widget.RecyclerView
+-        android:id="@+id/reyclerview_message_list"
++        android:id="@+id/recyclerview_message_list"
+         android:layout_width="0dp"
+         android:layout_height="0dp"
+         app:layout_constraintTop_toTopOf="parent"

@@ -5,27 +5,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sendbird.chattutorial.MessageListActivity">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/reyclerview_message_list"
+        android:id="@+id/recycler_chat"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        android:scrollbars="vertical">
     </android.support.v7.widget.RecyclerView>
 
     <!-- A horizontal line between the chatbox and RecyclerView -->
     <View
+        android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:background="#dfdfdf"
-        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <LinearLayout
         android:id="@+id/layout_chatbox"
@@ -53,13 +56,14 @@
         <Button
             android:id="@+id/button_chatbox_send"
             android:text="SEND"
-            android:textSize="14dp"
+            android:textSize="14sp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:layout_width="64dp"
             android:layout_height="48dp"
             android:gravity="center"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="bottom"
+            android:focusable="true" />
 
     </LinearLayout>
 
