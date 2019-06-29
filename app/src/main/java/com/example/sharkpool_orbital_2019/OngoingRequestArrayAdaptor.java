@@ -100,6 +100,11 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
             }
         }
         String currStatus = mDataset.elementAt(position).getStatus();
+        boolean disputed = mDataset.elementAt(position).isDispute();
+
+        if (disputed){
+            currStatus = currStatus.concat((" (Under Dispute)"));
+        }
         holder.reqStatus.setText(currStatus);
 
         switch(currStatus){
@@ -110,6 +115,9 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
             case "Lent/Borrowed":
                 holder.reqStatus.setTextColor(Color.BLUE);
                 break;
+
+            case "Completed":
+                holder.reqStatus.setTextColor(Color.GREEN);
 
             default:
                 holder.reqStatus.setTextColor(Color.RED);

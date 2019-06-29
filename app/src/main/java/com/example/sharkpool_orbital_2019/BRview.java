@@ -136,6 +136,7 @@ public class BRview extends AppCompatActivity {
                             cancelLend.setEnabled(true);
                         }
                         submitCode.setEnabled(true);
+                        status.setTextColor(Color.MAGENTA);
                         break;
 
                     case "Lent/Borrowed":
@@ -143,12 +144,22 @@ public class BRview extends AppCompatActivity {
                         submitCode.setText("Confirm Return");
                         submitCode.setEnabled(true);
                         dispute.setEnabled(true);
+                        status.setTextColor(Color.BLUE);
                         break;
 
                     default: // Completed
                         startDate.append(request.getStartDate().toString());
                         returnDate.append(request.getReturnDate().toString());
                         dispute.setEnabled(true);
+                        status.setTextColor(Color.GREEN);
+                }
+
+                //If under dispute, disable all possible actions
+                if (request.isDispute()){
+                    status.append(" (Under Dispute)");
+                    status.setTextColor(Color.RED);
+                    submitCode.setEnabled(false);
+                    dispute.setEnabled(false);
                 }
             }
         });

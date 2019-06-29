@@ -71,7 +71,7 @@ public class logDispute extends AppCompatActivity {
         db.collection("disputes").document(uniqueBrid).set(disp).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                db.collection("requests").document(uniqueBrid).update("status","Disputed").addOnSuccessListener(new OnSuccessListener<Void>() {
+                db.collection("requests").document(uniqueBrid).update("dispute",true).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Intent intent = new Intent(getBaseContext(),MainMenu.class);
