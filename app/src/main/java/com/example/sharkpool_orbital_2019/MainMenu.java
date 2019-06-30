@@ -3,8 +3,12 @@ package com.example.sharkpool_orbital_2019;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.View;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -23,11 +27,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     AppUser currUser = new AppUser();
+    private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String token;
+    private ArrayList<String> list = new ArrayList<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +70,18 @@ public class MainMenu extends AppCompatActivity
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
         //get userdata from DB
         currUser.initialize("Error fetching name", "Error fetching email", -1);
 
 
-        DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(uid);
+        DocumentReference mDocRef = db.collection("users").document(uid);
         Task<DocumentSnapshot> document = mDocRef.get();
 
         document.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+            public void onSuccess(final DocumentSnapshot documentSnapshot) {
                 String displayName = documentSnapshot.get("displayName").toString();
                 String emailAddress = documentSnapshot.get("emailAddress").toString();
                 int credits = ((Long) documentSnapshot.get("credits")).intValue();
@@ -82,6 +97,14 @@ public class MainMenu extends AppCompatActivity
                     Intent intent = new Intent(getBaseContext(), tocPage.class);
                     startActivity(intent);
                 }
+
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        token = instanceIdResult.getToken();
+                        getLL();
+                    }
+                });
             }
         });
         /*
@@ -100,6 +123,35 @@ public class MainMenu extends AppCompatActivity
         selectedFragment = new HistoryFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container,
                 selectedFragment).commit();
+    }
+
+    public void getLL() {
+        db.collection("users").document(uid).collection("lendList").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document: queryDocumentSnapshots){
+                            list.add(document.getId());
+                        }
+                        updateTokens(list);
+                    }
+                });
+    }
+
+    public void updateTokens(ArrayList<String> list){
+        WriteBatch batch = db.batch();
+
+        for (int k = 0; k < list.size(); k++){
+            DocumentReference ref = db.collection("users").document(uid).collection("lendList").document(list.get(k));
+            batch.update(ref, "token", token);
+        }
+
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d("Firebase","Tokens updated");
+            }
+        });
     }
 
     @Override

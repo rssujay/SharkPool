@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                  int count = 0;
                  @Override
                  public void onClick(View v) {
-                     if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                     if (FirebaseAuth.getInstance().getCurrentUser() == null || FirebaseAuth.getInstance().getCurrentUser().getUid().isEmpty()){
                          Intent intent = new Intent(v.getContext(), LoginActivity.class);
                             startActivity(intent);
                      }

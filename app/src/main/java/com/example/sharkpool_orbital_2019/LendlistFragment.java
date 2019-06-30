@@ -31,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +43,7 @@ import java.util.Vector;
 public class LendlistFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String token;
     private CollectionReference listRef = db.collection("users").document(uid).collection("lendList");
     private TextView itemCountText;
 
@@ -122,37 +125,48 @@ public class LendlistFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 submitBar.setVisibility(View.VISIBLE);
-                MyItem newItem = new MyItem();
-                String itemName = myNewItemNameEntry.getText().toString();
+                final MyItem newItem = new MyItem();
+                final String itemName = myNewItemNameEntry.getText().toString();
                 final String itemType = myNewItemTypeEntry.getText().toString();
 
-                if(itemName.isEmpty() || itemType.isEmpty()){
-                    popupWindow.dismiss();
-                    submitBar.setVisibility(View.INVISIBLE);
-                    return;
-                }
 
-                newItem.initialize(itemName,itemType);
-                db.collection("users").document(uid).collection("lendList").document(newItem.getUUID()).set(newItem).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Map<String, Boolean> temp = new HashMap<>();
-                        temp.put("exists",true);
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(
+                        new OnSuccessListener<InstanceIdResult>() {
+                            @Override
+                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                token = instanceIdResult.getToken();
 
-                        db.collection("itemTypes").document(itemType).set(temp).addOnSuccessListener(
-                                new OnSuccessListener<Void>() {
+                                if(itemName.isEmpty() || itemType.isEmpty()){
+                                    popupWindow.dismiss();
+                                    submitBar.setVisibility(View.INVISIBLE);
+                                    return;
+                                }
+
+                                newItem.initialize(itemName,itemType,token);
+                                db.collection("users").document(uid).collection("lendList").document(newItem.getUUID()).set(newItem).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        submitBar.setVisibility(View.INVISIBLE);
-                                        popupWindow.dismiss();
+                                        Map<String, Boolean> temp = new HashMap<>();
+                                        temp.put("exists",true);
+
+                                        db.collection("itemTypes").document(itemType).set(temp).addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        submitBar.setVisibility(View.INVISIBLE);
+                                                        popupWindow.dismiss();
+                                                    }
+                                                }
+                                        );
                                     }
-                                }
-                        );
-                    }
-                });
+                                });
+                            }
+                        }
+                );
             }
         });
     }
+
     private void populateOptions(){
         CollectionReference collRef = db.collection("itemTypes");
 

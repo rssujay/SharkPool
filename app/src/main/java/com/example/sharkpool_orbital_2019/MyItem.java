@@ -7,14 +7,16 @@ public class MyItem {
     private String itemName;
     private String itemType;
     private String uuid;
+    private String token;
 
     public MyItem(){
     }
 
-    public void initialize(String Name, String Type){
+    public void initialize(String Name, String Type, String token){
         this.itemName = Name;
         this.itemType = Type;
         this.uuid = java.util.UUID.randomUUID().toString();
+        this.token = token;
     }
 
     public String getItemType() {
@@ -27,5 +29,9 @@ public class MyItem {
 
     public String getUUID() {
         return uuid;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
