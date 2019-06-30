@@ -19,6 +19,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BRview extends AppCompatActivity {
     //Meta
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -277,7 +280,7 @@ public class BRview extends AppCompatActivity {
     }
 
     public void startChat(View v){
-        if (request.getStatus() == "Open" && userIsBorrower){
+        if (request.getStatus().equals("Open")){
             Toast.makeText(getBaseContext(), "No chat to be opened.", Toast.LENGTH_LONG).show();
             return;
         }
@@ -288,6 +291,8 @@ public class BRview extends AppCompatActivity {
         } else {
             otherID = request.getBorrowerUID();
         }
+        List<String> ChatUIDs = new ArrayList<>();
+        ChatUIDs.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
         intent.putExtra("otherID", otherID);
         startActivity(intent);
     }

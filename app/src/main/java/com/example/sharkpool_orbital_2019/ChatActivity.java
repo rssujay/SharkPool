@@ -1,17 +1,22 @@
 package com.example.sharkpool_orbital_2019;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sendbird.android.BaseChannel;
@@ -32,13 +37,14 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-    private String mChannelURL;
-    //private PreviousMessageListQuery previousMessageListQuery;
-    //private List<BaseMessage> messageList = new ArrayList<>();
+    public String mChannelURL = "default";
 
     private RecyclerView mMessageRecycler;
     private ChatAdapter mMessageAdapter;
     private LinearLayoutManager mLayoutManager;
+
+    private Button sendButton;
+    private EditText chatbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,8 @@ public class ChatActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_chat);
         mMessageRecycler = findViewById(R.id.recycler_chat);
+        sendButton = findViewById(R.id.button_chatbox_send);
+        chatbox = findViewById(R.id.edittext_chatbox);
 
         //Double-checks whether user is connected to SendBird
 
@@ -66,34 +74,31 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
 
-        //createGroupChannel(ChatUIDs); //creates 1-on-1 channel; goes to previously created one if already created
-        //Temporary test message to test for channel creation
-        //Toast.makeText(getApplicationContext(), "Channel successfully created!", Toast.LENGTH_SHORT).show();
-
-        //TODO: retrieving list of messages
-
-        //Need to search for channel since we do not have the chat URL
-
-
-
-        //mMessageAdapter = new MessageListAdapter(this, messageList); //TODO
+        createGroupChannel(ChatUIDs); //creates 1-on-1 channel; goes to previously created one if already created
 
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setReverseLayout(true);
-        //mMessageRecycler.setAdapter(mMessageAdapter);
         mMessageRecycler.setLayoutManager(mLayoutManager);
 
-        mChannelURL = "sendbird_group_channel_124131094_8135440ea76a101be52fd7d3a7e4c8018e788081";
-
-        GroupChannel.getChannel(mChannelURL, new GroupChannel.GroupChannelGetHandler() {
+        //mChannelURL = "sendbird_group_channel_124131094_8135440ea76a101be52fd7d3a7e4c8018e788081";
+        /*
+        oof = (mmChannelURL.equals(mChannelURL)) ? "Same" : "Not Same: " + mChannelURL;
+        Log.d("URL_error", oof);
+        */
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onResult(final GroupChannel groupChannel, SendBirdException e) {
-                if (e != null){ //error
-                    Toast.makeText(getApplicationContext(), "Channel getting error!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                mMessageAdapter = new ChatAdapter(groupChannel);
-                mMessageRecycler.setAdapter(mMessageAdapter);
+            public void run() {
+                GroupChannel.getChannel(mChannelURL, new GroupChannel.GroupChannelGetHandler() {
+                    @Override
+                    public void onResult(GroupChannel groupChannel, SendBirdException e) {
+                        if (e != null) { //error
+                            Toast.makeText(getApplicationContext(), "Channel getting error!", Toast.LENGTH_LONG).show();
+                            Log.d("URL_error", "Error: " + mChannelURL);
+                            return;
+                        }
+                        mMessageAdapter = new ChatAdapter(groupChannel);
+                        mMessageRecycler.setAdapter(mMessageAdapter);
                 /*
                 groupChannel.sendUserMessage("hello there", new BaseChannel.SendUserMessageHandler() {
                     @Override
@@ -105,23 +110,11 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Message sending success!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-                previousMessageListQuery = groupChannel.createPreviousMessageListQuery();
-                previousMessageListQuery.load(50, false, new PreviousMessageListQuery.MessageListQueryResult() {
-                    @Override
-                    public void onResult(List<BaseMessage> list, SendBirdException e) {
-                        if (e != null){
-                            Toast.makeText(getApplicationContext(), "Message retrieval error!", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        Toast.makeText(getApplicationContext(), "Message retrieval success!", Toast.LENGTH_LONG).show();
-                        messageList.addAll(list);
-                        mMessageAdapter.notifyDataSetChanged();
+                */
                     }
                 });
-                */
             }
-        });
+        }, 1000);
 
         mMessageRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             //@Nullable
@@ -132,21 +125,36 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = chatbox.getText().toString();
+                chatbox.setText("");
+                mMessageAdapter.sendMessage(message);
+                mMessageAdapter.refresh();
+            }
+        });
+
+
+
     }
 
     private void createGroupChannel(List<String> ChatUIDs){
+
         GroupChannel.createChannelWithUserIds(ChatUIDs, true, new GroupChannel.GroupChannelCreateHandler() {
             @Override
-            public void onResult(GroupChannel groupChannel, SendBirdException e) {
+            public void onResult(final GroupChannel groupChannel, SendBirdException e){
                 if (e != null) {
                     // Error!
+                    Log.d("URL_error", "An unknown error occurred.");
                     return;
                 }
-
-                //Intent intent = new Intent();
-                //setResult(RESULT_OK, intent);
-                mChannelURL = groupChannel.getUrl();
-                //finish();
+                mChannelURL = groupChannel.getUrl().trim();
+                Log.d("URL_error", "URL saved as " + mChannelURL);
+                //mmChannelURL = "sendbird_group_channel_124131094_8135440ea76a101be52fd7d3a7e4c8018e788081";
+                //oof = (mmChannelURL.equals(mChannelURL)) ? "Same" :"Not Same";
+                //Log.d("URL_error", oof);
             }
         });
     }
@@ -222,6 +230,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
         }
+
 
         // Determines the appropriate ViewType according to the sender of the message.
         @Override
