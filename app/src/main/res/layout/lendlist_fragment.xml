@@ -30,7 +30,7 @@
         android:text="Add new item"
         />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/lendItems"
         android:scrollbars="vertical"
