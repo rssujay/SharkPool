@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sendbird.android.BaseChannel;
@@ -80,11 +79,8 @@ public class ChatActivity extends AppCompatActivity {
         mLayoutManager.setReverseLayout(true);
         mMessageRecycler.setLayoutManager(mLayoutManager);
 
-        //mChannelURL = "sendbird_group_channel_124131094_8135440ea76a101be52fd7d3a7e4c8018e788081";
-        /*
-        oof = (mmChannelURL.equals(mChannelURL)) ? "Same" : "Not Same: " + mChannelURL;
-        Log.d("URL_error", oof);
-        */
+        //Delay for URL to be updated before channel is accessed
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -99,18 +95,6 @@ public class ChatActivity extends AppCompatActivity {
                         }
                         mMessageAdapter = new ChatAdapter(groupChannel);
                         mMessageRecycler.setAdapter(mMessageAdapter);
-                /*
-                groupChannel.sendUserMessage("hello there", new BaseChannel.SendUserMessageHandler() {
-                    @Override
-                    public void onSent(UserMessage userMessage, SendBirdException e) {
-                        if (e != null) { //error
-                            Toast.makeText(getApplicationContext(), "Message sending error!", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        Toast.makeText(getApplicationContext(), "Message sending success!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                */
                     }
                 });
             }
@@ -135,9 +119,6 @@ public class ChatActivity extends AppCompatActivity {
                 mMessageAdapter.refresh();
             }
         });
-
-
-
     }
 
     private void createGroupChannel(List<String> ChatUIDs){
@@ -152,9 +133,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 mChannelURL = groupChannel.getUrl().trim();
                 Log.d("URL_error", "URL saved as " + mChannelURL);
-                //mmChannelURL = "sendbird_group_channel_124131094_8135440ea76a101be52fd7d3a7e4c8018e788081";
-                //oof = (mmChannelURL.equals(mChannelURL)) ? "Same" :"Not Same";
-                //Log.d("URL_error", oof);
             }
         });
     }
@@ -322,7 +300,5 @@ public class ChatActivity extends AppCompatActivity {
                 timeText.setText(dateFormat.format(message.getCreatedAt()));
             }
         }
-
-
     }
 }
