@@ -8,11 +8,19 @@
 ![Java](https://img.icons8.com/color/48/000000/java-coffee-cup-logo.png)
 ![Firebase](https://img.icons8.com/color/48/000000/firebase.png)
 ![node.js](https://img.icons8.com/color/48/000000/nodejs.png)
+![SendBird](https://miro.medium.com/fit/c/50/50/1*6Uu2nBqQCTnWHeSNfDyzHg.png)
+
 
 
 __WIP Android application to facilitate short-term borrowing/lending within the university community.__
 
 ---
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=I1J2v25vTQk
+" target="_blank"><img src="http://img.youtube.com/vi/I1J2v25vTQk/0.jpg" 
+alt="Project launch video" width="240" height="180" border="10" /></a>
+
+[Project Readme](https://docs.google.com/document/d/11NArC7NO7j1bZG8L_qWr9MRImzOhqEFty44V3jZfHig/edit?usp=sharing)
+
 Features include:
 - [x] Incentivized credit-based lending/borrowing system
 - [x] Interaction with new borrow requests, ongoing requests as well as user history
