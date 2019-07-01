@@ -11,9 +11,15 @@
 ![SendBird](https://miro.medium.com/fit/c/50/50/1*6Uu2nBqQCTnWHeSNfDyzHg.png)
 
 
+
 __WIP Android application to facilitate short-term borrowing/lending within the university community.__
 
 ---
+[![Introductory video](http://img.youtube.com/vi/I1J2v25vTQk/0.jpg)](http://www.youtube.com/watch?v=I1J2v25vTQk)
+
+
+[Project Readme](https://docs.google.com/document/d/11NArC7NO7j1bZG8L_qWr9MRImzOhqEFty44V3jZfHig/edit?usp=sharing)
+
 Features include:
 - [x] Incentivized credit-based lending/borrowing system
 - [x] Interaction with new borrow requests, ongoing requests as well as user history
