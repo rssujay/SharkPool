@@ -8,6 +8,7 @@
 ![Java](https://img.icons8.com/color/48/000000/java-coffee-cup-logo.png)
 ![Firebase](https://img.icons8.com/color/48/000000/firebase.png)
 ![node.js](https://img.icons8.com/color/48/000000/nodejs.png)
+![SendBird](https://miro.medium.com/fit/c/50/50/1*6Uu2nBqQCTnWHeSNfDyzHg.png)
 
 
 __WIP Android application to facilitate short-term borrowing/lending within the university community.__
