@@ -15,8 +15,9 @@
 __WIP Android application to facilitate short-term borrowing/lending within the university community.__
 
 ---
-[![Introductory video](http://img.youtube.com/vi/I1J2v25vTQk/0.jpg)](http://www.youtube.com/watch?v=I1J2v25vTQk)
-
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=I1J2v25vTQk
+" target="_blank"><img src="http://img.youtube.com/vi/I1J2v25vTQk/0.jpg" 
+alt="Project launch video" width="240" height="180" border="10" /></a>
 
 [Project Readme](https://docs.google.com/document/d/11NArC7NO7j1bZG8L_qWr9MRImzOhqEFty44V3jZfHig/edit?usp=sharing)
 
