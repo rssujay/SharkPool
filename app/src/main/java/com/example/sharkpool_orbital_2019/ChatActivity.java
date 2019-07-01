@@ -30,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -149,6 +151,13 @@ public class ChatActivity extends AppCompatActivity {
             mChannel = channel;
 
             refresh();
+            Timer mTimer = new Timer();
+            mTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    refresh();
+                }
+            }, 1000, 500);
         }
 
         // Retrieves 30 most recent messages.
