@@ -9,11 +9,14 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -116,6 +119,21 @@ public class LoginActivity extends AppCompatActivity {
                 if (e != null){ //error
                     return; //TODO: error handling
                 }
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        SendBird.registerPushTokenForCurrentUser(instanceIdResult.getToken(), new SendBird.RegisterPushTokenWithStatusHandler() {
+                            @Override
+                            public void onRegistered(SendBird.PushTokenRegistrationStatus status, SendBirdException e) {
+                                if (e != null) {        // Error.
+                                    Log.d("SendBirdPush", "Token creation failure");
+                                    return;
+                                }
+                                Log.d("SendBirdPush", "Token creation success");
+                            }
+                        });
+                    }
+                });
             }
         });
 

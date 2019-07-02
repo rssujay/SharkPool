@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "267625557975-fgqec53mmq8ta0hhb09ksr5m8j19js4s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sharkpool_orbital_2019",
+            "certificate_hash": "4a0f73baaa0b2e52004b197dc96fef30103beba2"
+          }
+        },
+        {
           "client_id": "267625557975-7c97e8l3jiiat0ntrjn969vjb6rckmum.apps.googleusercontent.com",
           "client_type": 3
         }

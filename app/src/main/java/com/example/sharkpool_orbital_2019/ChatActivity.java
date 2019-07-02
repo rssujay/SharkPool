@@ -16,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
@@ -71,6 +74,21 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Failed to connect to messaging service. Check your connection and try again.", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(ChatActivity.this, new OnSuccessListener<InstanceIdResult>() {
+                        @Override
+                        public void onSuccess(InstanceIdResult instanceIdResult) {
+                            SendBird.registerPushTokenForCurrentUser(instanceIdResult.getToken(), new SendBird.RegisterPushTokenWithStatusHandler() {
+                                @Override
+                                public void onRegistered(SendBird.PushTokenRegistrationStatus status, SendBirdException e) {
+                                    if (e != null) {        // Error.
+                                        Log.d("SendBirdPush", "Token creation failure");
+                                        return;
+                                    }
+                                    Log.d("SendBirdPush", "Token creation success");
+                                }
+                            });
+                        }
+                    });
                 }
             });
         }
