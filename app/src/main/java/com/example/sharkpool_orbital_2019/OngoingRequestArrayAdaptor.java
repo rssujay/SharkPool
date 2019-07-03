@@ -1,7 +1,8 @@
 package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
-import android.graphics.Color;
+
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
         public TextView creationDate;
         public TextView reqStatus;
 
-        public MyViewHolder(View v) {
+        public MyViewHolder(CardView v) {
             super(v);
 
             itemName = v.findViewById(R.id.ItemName);
@@ -64,9 +65,8 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
     public OngoingRequestArrayAdaptor.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                                       int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext())
+        CardView v = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.ongoingrequest_layout, null);
-
 
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
@@ -77,6 +77,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
     public void onBindViewHolder(final OngoingRequestArrayAdaptor.MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        CardView temp = (CardView) holder.itemView;
         holder.itemName.setText(mDataset.elementAt(position).getItemName());
         holder.itemType.setText(mDataset.elementAt(position).getItemType());
         holder.creationDate.append(mDataset.elementAt(position).getCreatedDate().toString());
@@ -89,7 +90,6 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
 
         if (mDataset.elementAt(position).getLenderUID().equals(userUID)){
             holder.borrowerName.setText("Lending to: ".concat(borrowerName));
-            holder.borrowerName.setBackgroundResource(R.drawable.bgblue_header);
         }
         else {
             if (lenderName.isEmpty()){
@@ -109,19 +109,22 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
 
         switch(currStatus){
             case "Closed":
-                holder.reqStatus.setTextColor(Color.MAGENTA);
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_blue));
                 break;
 
             case "Lent/Borrowed":
-                holder.reqStatus.setTextColor(Color.BLUE);
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_yellow));
                 break;
 
             case "Completed":
-                holder.reqStatus.setTextColor(Color.GREEN);
                 break;
 
-            default:
-                holder.reqStatus.setTextColor(Color.RED);
+            case "Open":
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_green));
+                break;
+
+            default: //Open
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_red));
         }
     }
 

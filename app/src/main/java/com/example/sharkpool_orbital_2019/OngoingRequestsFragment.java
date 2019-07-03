@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,12 +28,14 @@ public class OngoingRequestsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private Vector<BorrowRequest> ongoingRequests = new Vector<>();
+    private ProgressBar progress;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.requests_fragment, container, false);
         recyclerView = rootView.findViewById(R.id.OngoingRequestsList);
+        progress = rootView.findViewById(R.id.progress_horizontal);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //Populate
@@ -99,9 +102,9 @@ public class OngoingRequestsFragment extends Fragment {
                         OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
                         recyclerView.setAdapter(mData);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        progress.setVisibility(View.INVISIBLE);
                     }
                 });
-
         return rootView;
     }
 }

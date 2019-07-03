@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/purple_gradient"
+    >
+
+    <ProgressBar
+        android:id="@+id/progress_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="visible"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/OngoingRequestsList"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+
+
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         tools:context=".MainMenu"
         />
-
 
 </RelativeLayout>

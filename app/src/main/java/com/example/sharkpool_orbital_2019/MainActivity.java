@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                      }
 
-                     FirebaseAuth.getInstance().getCurrentUser().reload();
+                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                         FirebaseAuth.getInstance().getCurrentUser().reload();
+                     }
                      if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()){
                          if (count == 0) {
                              FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
