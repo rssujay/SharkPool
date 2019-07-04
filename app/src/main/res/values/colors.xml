@@ -8,8 +8,9 @@
     <color name="material_pink">#E91E63</color>
     <color name="material_green">#4CAF50</color>
     <color name="material_blue">#2196F3</color>
+    <color name="dark_blue">#1B73B9</color>
     <color name="background_colour">#fcfcfc</color>
-    <color name="pale_green">#B5EEB7</color>
+    <color name="pale_green">#9CCA9D</color>
     <color name="pale_red">#FC8F8F</color>
     <color name="pale_blue">#6CA1F7</color>
     <color name="pale_yellow">#EED261</color>

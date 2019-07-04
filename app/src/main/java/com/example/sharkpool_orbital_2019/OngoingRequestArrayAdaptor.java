@@ -66,7 +66,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
                                                                       int viewType) {
         // create a new view
         CardView v = (CardView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ongoingrequest_layout, null);
+                .inflate(R.layout.ongoingrequest_layout, parent, false);
 
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
