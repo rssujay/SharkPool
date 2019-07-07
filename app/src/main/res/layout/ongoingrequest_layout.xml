@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
@@ -9,16 +8,15 @@
     android:layout_marginLeft="@dimen/mtrl_card_spacing"
     android:layout_marginTop="@dimen/mtrl_card_spacing"
     android:layout_marginRight="@dimen/mtrl_card_spacing"
-    app:cardBackgroundColor="@android:color/secondary_text_dark"
-    app:cardCornerRadius="@dimen/cardview_default_radius"
-
     android:clickable="true"
     android:focusable="true"
-    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@android:color/secondary_text_dark"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardMaxElevation="4dp"
     app:cardPreventCornerOverlap="true"
-    app:cardMaxElevation="@dimen/cardview_default_elevation"
-    app:cardElevation="@dimen/cardview_default_elevation"
-    >
+    app:cardUseCompatPadding="true">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/relativeLayout"
@@ -26,15 +24,16 @@
         android:layout_height="match_parent"
         android:foreground="?android:attr/selectableItemBackground">
 
+
         <TextView
             android:id="@+id/borrowerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="3dp"
+            android:paddingStart="6dp"
             android:paddingTop="3dp"
             android:paddingEnd="3dp"
             android:text="Borrowing from: "
-            android:textColor="@color/cardview_light_background"
+            android:textColor="#363636"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/relativeLayout"
             app:layout_constraintTop_toTopOf="@id/relativeLayout" />
@@ -60,8 +59,7 @@
             android:src="@drawable/spcredits"
 
             app:layout_constraintEnd_toEndOf="@id/relativeLayout"
-            app:layout_constraintTop_toBottomOf="@id/borrowerName"
-            />
+            app:layout_constraintTop_toBottomOf="@id/borrowerName" />
 
         <TextView
             android:id="@+id/creditVal"
@@ -100,8 +98,7 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="Status"
             app:layout_constraintStart_toEndOf="@id/reqStatusOne"
-            app:layout_constraintTop_toBottomOf="@id/creditVal"
-            />
+            app:layout_constraintTop_toBottomOf="@id/creditVal" />
 
         <TextView
             android:id="@+id/creationDate"
@@ -113,7 +110,6 @@
             android:textAlignment="textEnd"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="@id/relativeLayout"
-            app:layout_constraintTop_toBottomOf="@id/reqStatus"
-            />
+            app:layout_constraintTop_toBottomOf="@id/reqStatus" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

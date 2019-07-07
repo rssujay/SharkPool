@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SharkPool-Orbital-2019</string>
+    <string name="app_name">Sharkpool</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

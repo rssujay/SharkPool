@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BRview">
+    tools:context=".BRview"
+    android:background="@color/very_light_blue">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -146,12 +147,14 @@
             android:id="@+id/chatButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="chat"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rounded_rectangle_pale_orange"
             android:onClick="startChat"
-            app:layout_constraintTop_toBottomOf="@+id/brComments"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="chat"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/brComments" />
 
         <TextView
             android:id="@+id/userCode1"
@@ -226,58 +229,56 @@
             android:id="@+id/submitCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Confirm Borrow / Lend"
+            android:background="@drawable/rounded_rectangle_pale_orange"
             android:enabled="false"
-
-            app:layout_constraintTop_toBottomOf="@+id/codeEntry"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp"
             android:onClick="checkCode"
-            />
+            android:text="Confirm Borrow / Lend"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/codeEntry" />
 
         <Button
             android:id="@+id/borrowCancel"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Delete request"
-            android:enabled="false"
-            android:background="@color/colorAccent"
-
-            app:layout_constraintTop_toBottomOf="@+id/returnDate"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="40dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/rounded_rectangle_pale_red"
+
+            android:enabled="false"
             android:onClick="borrowDelete"
-            />
+            android:text="Delete request"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/returnDate" />
 
         <Button
             android:id="@+id/lendCancel"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Cancel lending"
-            android:enabled="false"
-            android:background="@color/colorAccent"
-
-            app:layout_constraintTop_toBottomOf="@+id/returnDate"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="40dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/rounded_rectangle_pale_red"
+
+            android:enabled="false"
             android:onClick="cancelLender"
-            />
+            android:text="Cancel lending"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/returnDate" />
 
         <Button
             android:id="@+id/dispute"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Open Dispute"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/rounded_rectangle_pale_blue"
             android:enabled="false"
+            android:padding="4dp"
             android:onClick="startDispute"
-
-            app:layout_constraintTop_toBottomOf="@+id/returnDate"
+            android:text="Open Dispute"
             app:layout_constraintEnd_toStartOf="@id/lendCancel"
             app:layout_constraintStart_toEndOf="@id/borrowCancel"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/returnDate" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

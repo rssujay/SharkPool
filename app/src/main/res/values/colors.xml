@@ -14,4 +14,10 @@
     <color name="pale_red">#FC8F8F</color>
     <color name="pale_blue">#6CA1F7</color>
     <color name="pale_yellow">#EED261</color>
+    <color name="coral_light_blue">#AFE9E5</color>
+    <color name="coral_light_red">#F9A1A1</color>
+    <color name="coral_light_orange">#FACE9F</color>
+    <color name="coral_light_yellow">#FFE493</color>
+    <color name="very_light_blue">#E9F6FF</color>
+    <color name="very_light_yellow">#FFFEE2</color>
 </resources>

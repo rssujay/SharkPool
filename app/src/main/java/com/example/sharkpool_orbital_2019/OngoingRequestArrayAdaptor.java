@@ -109,11 +109,11 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
 
         switch(currStatus){
             case "Closed":
-                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_blue));
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.coral_light_blue));
                 break;
 
             case "Lent/Borrowed":
-                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_yellow));
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.coral_light_yellow));
                 break;
 
             case "Completed":
@@ -124,7 +124,7 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
                 break;
 
             default: //Open
-                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.pale_red));
+                temp.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.coral_light_red));
         }
     }
 
