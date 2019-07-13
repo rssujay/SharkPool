@@ -18,6 +18,7 @@
     <color name="coral_light_red">#F9A1A1</color>
     <color name="coral_light_orange">#FACE9F</color>
     <color name="coral_light_yellow">#FFE493</color>
+    <color name="light_blue">#CC50CDFF</color>
     <color name="very_light_blue">#E9F6FF</color>
     <color name="very_light_yellow">#FFFEE2</color>
 </resources>
