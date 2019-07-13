@@ -28,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     List<AuthUI.IdpConfig> providers = Arrays.asList(new AuthUI.IdpConfig.EmailBuilder().build());
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setTheme(R.style.AppTheme)
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN);
@@ -111,13 +111,17 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+        if (resultCode == RESULT_CANCELED){
+            Intent return_intent = new Intent(this, MainActivity.class);
+            startActivity(return_intent);
+        }
     }
     private void connectToSendBird(String UID){
         SendBird.connect(UID, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
                 if (e != null){ //error
-                    return; //TODO: error handling
+                    Log.d("SendBirdPush", "Connection failure.");
                 }
                 FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<InstanceIdResult>() {
                     @Override
