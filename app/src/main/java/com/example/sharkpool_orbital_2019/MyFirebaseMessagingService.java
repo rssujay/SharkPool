@@ -12,11 +12,13 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.shadow.com.google.gson.JsonElement;
+import com.sendbird.android.shadow.com.google.gson.JsonObject;
 import com.sendbird.android.shadow.com.google.gson.JsonParser;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -30,6 +32,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
     */
     public static int notif_id = 0;
+    public String senderID = FirebaseAuth.getInstance().getUid();
 
     public static String getToken(Context context) {
         return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
@@ -63,8 +66,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         String message = remoteMessage.getData().get("message");
         JsonElement payload = new JsonParser().parse(remoteMessage.getData().get("sendbird"));
+
         Log.d("SendBirdPush", "Message received.");
-        sendNotification(message, payload);
+        String sender = payload.getAsJsonObject().get("sender").getAsJsonObject().get("id").toString().substring(1,29);
+
+        if (!sender.equals(senderID)){
+            sendNotification(message, payload);
+            Log.d("SendBird", senderID + " success " + sender);
+        }
     }
 
     public void sendNotification(String message, JsonElement payload){
