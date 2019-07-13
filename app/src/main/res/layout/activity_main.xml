@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="360dp"
-        android:text="@string/action_sign_in" />
+        android:text="@string/action_sign_in"
+        android:onClick="redirectUser"
+        />
 
     <ImageView
         android:id="@+id/imageView3"
