@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button signIn;
     private ProgressBar delay;
+    private String notifRedirect = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
         signIn = findViewById(R.id.signinbtn);
         delay = findViewById(R.id.loginProgress);
         mAuth = FirebaseAuth.getInstance();
+
+        if (getIntent().getExtras() != null){
+            notifRedirect = getIntent().getExtras().getString("requestID");
+            getIntent().removeExtra("requestID");
+        }
     }
 
     @Override
@@ -78,8 +84,17 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             else{
-                                Intent intent = new Intent(getApplicationContext(), MainMenu.class);
-                                startActivity(intent);
+                                if (notifRedirect.isEmpty()) {
+                                    Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+                                    startActivity(intent);
+                                }
+
+                                else {
+                                    Intent intent = new Intent(getApplicationContext(), BRview.class);
+                                    intent.putExtra("initiator", notifRedirect);
+                                    notifRedirect = "";
+                                    startActivity(intent);
+                                }
                             }
                         }
                     });
@@ -106,8 +121,11 @@ public class MainActivity extends AppCompatActivity {
                     currentUser.sendEmailVerification();
                     Toast.makeText(v.getContext(), "Verification email sent - please verify and retry", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(v.getContext(), "Ensure that you have verified and retry in a minute", Toast.LENGTH_LONG).show();
+                    Toast.makeText(v.getContext(), "Ensure that you have verified and retry", Toast.LENGTH_LONG).show();
                 }
+            }
+            else {
+                proceedToMainMenu();
             }
         }
 

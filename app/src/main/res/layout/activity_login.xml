@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Loading, please wait..."
+        android:text="Initializing, please wait..."
         android:textColor="@android:color/white"
         />
 
