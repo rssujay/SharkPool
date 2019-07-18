@@ -2,12 +2,6 @@ package com.example.sharkpool_orbital_2019;
 
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +15,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -143,7 +144,7 @@ public class LendlistFragment extends Fragment {
                                 }
 
                                 newItem.initialize(itemName,itemType,token);
-                                db.collection("users").document(uid).collection("lendList").document(newItem.getUUID()).set(newItem).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                db.collection("users").document(uid).collection("lendList").document(newItem.getLenditemID()).set(newItem).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Map<String, Boolean> temp = new HashMap<>();

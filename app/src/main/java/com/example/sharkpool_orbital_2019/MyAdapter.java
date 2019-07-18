@@ -1,11 +1,12 @@
 package com.example.sharkpool_orbital_2019;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,7 +72,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users").document(uid).collection("lendList")
-                        .document(mDataset.elementAt(holder.getAdapterPosition()).getUUID()).delete();
+                        .document(mDataset.elementAt(holder.getAdapterPosition()).getLenditemID()).delete();
 
                 return true;
             }
