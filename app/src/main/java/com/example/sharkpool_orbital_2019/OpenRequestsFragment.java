@@ -2,16 +2,17 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,10 +22,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 public class OpenRequestsFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     private RecyclerView recyclerView;
     private Vector<BorrowRequest> openRequests = new Vector<>();
@@ -40,20 +44,31 @@ public class OpenRequestsFragment extends Fragment {
         //Populate
         CollectionReference collRef = db.collection("requests");
 
-        collRef.orderBy("createdDate", Query.Direction.ASCENDING).limit(5).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        //Query 1a
+        collRef.orderBy("borrowerUID", Query.Direction.ASCENDING)
+                .whereEqualTo("status","Open")
+                .whereGreaterThan("borrowerUID", uid)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document: queryDocumentSnapshots){
-                    if (document.get("status").equals("Open") &&
-                            !(document.get("borrowerUID").equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))) {
-                        // Comment out the above and uncomment the below version for debugging until "Ongoing" works
-                        // (document.get("borrowerUID").equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))) {
-                        openRequests.add(document.toObject(BorrowRequest.class));
-                    }
+                    openRequests.add(document.toObject(BorrowRequest.class));
                 }
-                RequestArrayAdaptor mData = new RequestArrayAdaptor(openRequests);
-                recyclerView.setAdapter(mData);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                updateRecyclerView();
+            }
+        });
+
+        //Query 1b
+        collRef.orderBy("borrowerUID", Query.Direction.ASCENDING)
+                .whereEqualTo("status","Open")
+                .whereLessThan("borrowerUID", uid)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document: queryDocumentSnapshots){
+                    openRequests.add(document.toObject(BorrowRequest.class));
+                }
+                updateRecyclerView();
             }
         });
 
@@ -66,5 +81,17 @@ public class OpenRequestsFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    private void updateRecyclerView(){
+        Collections.sort(openRequests, new Comparator<BorrowRequest>() {
+            @Override
+            public int compare(BorrowRequest o1, BorrowRequest o2) {
+                return o1.getCreatedDate().compareTo(o2.getCreatedDate());
+            }
+        });
+        RequestArrayAdaptor mData = new RequestArrayAdaptor(openRequests);
+        recyclerView.setAdapter(mData);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 }

@@ -1,16 +1,18 @@
 package com.example.sharkpool_orbital_2019;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +27,7 @@ import java.util.Vector;
 public class OngoingRequestsFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String errorMsg = "";
 
     private RecyclerView recyclerView;
     private Vector<BorrowRequest> ongoingRequests = new Vector<>();
@@ -52,6 +55,7 @@ public class OngoingRequestsFragment extends Fragment {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             ongoingRequests.add(document.toObject(BorrowRequest.class));
                         }
+                        updateRecyclerView();
                     }
                 });
 
@@ -66,6 +70,7 @@ public class OngoingRequestsFragment extends Fragment {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             ongoingRequests.add(document.toObject(BorrowRequest.class));
                         }
+                        updateRecyclerView();
                     }
                 });
 
@@ -80,10 +85,7 @@ public class OngoingRequestsFragment extends Fragment {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             ongoingRequests.add(document.toObject(BorrowRequest.class));
                         }
-
-                        OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
-                        recyclerView.setAdapter(mData);
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        updateRecyclerView();
                     }
                 });
 
@@ -98,13 +100,20 @@ public class OngoingRequestsFragment extends Fragment {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             ongoingRequests.add(document.toObject(BorrowRequest.class));
                         }
+                        updateRecyclerView();
 
-                        OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
-                        recyclerView.setAdapter(mData);
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                        progress.setVisibility(View.INVISIBLE);
+                        if (!errorMsg.isEmpty()){
+                            Log.d("Query",errorMsg);
+                        }
                     }
                 });
         return rootView;
+    }
+
+    private void updateRecyclerView(){
+        OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
+        recyclerView.setAdapter(mData);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        progress.setVisibility(View.INVISIBLE);
     }
 }
