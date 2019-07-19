@@ -2,31 +2,39 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class BRview extends AppCompatActivity {
     //Meta
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private boolean userIsBorrower;
+    private boolean userIsLender;
 
     private BorrowRequest request = new BorrowRequest();
 
@@ -44,6 +52,7 @@ public class BRview extends AppCompatActivity {
     private TextView startDate;
     private TextView returnDate;
     private EditText codeEntry;
+    private ProgressBar updateBar;
 
     private Button submitCode;
     private Button becomeLend;
@@ -77,92 +86,126 @@ public class BRview extends AppCompatActivity {
         dispute = findViewById(R.id.dispute);
         submitCode = findViewById(R.id.submitCode);
         chat = findViewById(R.id.chatButton);
+        updateBar = findViewById(R.id.updateBar);
 
         Bundle bundle = getIntent().getExtras();
         final String requestID = bundle.getString("initiator");
-        db.collection("requests").document(requestID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+        db.collection("requests").document(requestID).addSnapshotListener(BRview.this ,new EventListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                request.populate(documentSnapshot.getString("requestID"), documentSnapshot.getString("borrowerUID"),
-                        documentSnapshot.getString("borrowerName"), documentSnapshot.getString("lenderUID"),
-                        documentSnapshot.getString("lenderName"), documentSnapshot.getString("status"),
-                        documentSnapshot.getString("comments"), documentSnapshot.getDate("createdDate"),
-                        documentSnapshot.getDate("startDate"), documentSnapshot.getDate("returnDate"),
-                        documentSnapshot.getLong("borrowCodeOne").intValue(), documentSnapshot.getLong("borrowCodeTwo").intValue(),
-                        documentSnapshot.getLong("lendCodeOne").intValue(), documentSnapshot.getLong("lendCodeTwo").intValue(),
-                        documentSnapshot.getString("itemName"), documentSnapshot.getString("itemType"),
-                        documentSnapshot.getBoolean("recommendations"),documentSnapshot.getLong("creditValue").intValue(),
-                        documentSnapshot.getBoolean("dispute")
-                        );
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (!documentSnapshot.exists()) {
+                    Toast.makeText(getApplicationContext(), "Transaction updated, please retry", Toast.LENGTH_SHORT).show();
+                    finishAffinity();
+                    Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    WindowManager.LayoutParams lparams = getWindow().getAttributes();
+                    lparams.dimAmount = 0.7f;
+                    getWindow().setAttributes(lparams);
+                    updateBar.setVisibility(View.VISIBLE);
 
-                userIsBorrower = userUID.equals(request.getBorrowerUID());
+                    request.populate(documentSnapshot.getString("requestID"), documentSnapshot.getString("borrowerUID"),
+                            documentSnapshot.getString("borrowerName"), documentSnapshot.getString("lenderUID"),
+                            documentSnapshot.getString("lenderName"), documentSnapshot.getString("status"),
+                            documentSnapshot.getString("comments"), documentSnapshot.getDate("createdDate"),
+                            documentSnapshot.getDate("startDate"), documentSnapshot.getDate("returnDate"),
+                            documentSnapshot.getLong("borrowCodeOne").intValue(), documentSnapshot.getLong("borrowCodeTwo").intValue(),
+                            documentSnapshot.getLong("lendCodeOne").intValue(), documentSnapshot.getLong("lendCodeTwo").intValue(),
+                            documentSnapshot.getString("itemName"), documentSnapshot.getString("itemType"),
+                            documentSnapshot.getBoolean("recommendations"), documentSnapshot.getLong("creditValue").intValue(),
+                            documentSnapshot.getBoolean("dispute")
+                    );
 
-                requestUID.append(request.getRequestID());
-                status.append(request.getStatus());
-                itemName.setText(request.getItemName());
-                itemType.setText(request.getItemType());
-                borrowerName.setText(request.getBorrowerName());
+                    userIsBorrower = userUID.equals(request.getBorrowerUID());
+                    userIsLender = (request.getLenderUID().isEmpty() || request.getLenderUID().equals(userUID));
 
-                if (!request.getLenderName().isEmpty()){
-                    lenderName.setText(request.getLenderName());
-                }
+                    if (!(userIsLender || userIsBorrower)) {
+                        Toast.makeText(getApplicationContext(), "Transaction updated, please retry", Toast.LENGTH_SHORT).show();
+                        finishAffinity();
+                        Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                creditValue.append(Integer.toString(request.getCreditValue()));
-                comments.append(request.getComments());
+                    requestUID.setText("Request ID: ".concat(request.getRequestID()));
+                    status.setText(request.getStatus());
+                    itemName.setText(request.getItemName());
+                    itemType.setText(request.getItemType());
+                    borrowerName.setText(request.getBorrowerName());
 
-                if(userIsBorrower) {
-                    codeOne.append(Integer.toString(request.getBorrowCodeOne()));
-                    codeTwo.append(Integer.toString(request.getBorrowCodeTwo()));
-                }
+                    if (!request.getLenderName().isEmpty()) {
+                        lenderName.setText(request.getLenderName());
+                    } else {
+                        lenderName.setText("No active lender");
+                    }
 
-                else{
-                    codeOne.append(Integer.toString(request.getLendCodeOne()));
-                    codeTwo.append(Integer.toString(request.getLendCodeTwo()));
-                }
+                    creditValue.setText("Credits: ".concat(Integer.toString(request.getCreditValue())));
+                    comments.setText("Borrower comments: ".concat(request.getComments()));
 
-                // Status specific code
-                switch (request.getStatus()){
-                    case "Open":
-                        // Allow borrower to delete request
-                        if (userIsBorrower){
-                            deleteReq.setEnabled(true);
-                        }
-                        //Enable become lender for potential lender
-                        else{
-                            becomeLend.setVisibility(View.VISIBLE);
-                        }
-                        break;
+                    if (userIsBorrower) {
+                        codeOne.setText("Initial code: ".concat(Integer.toString(request.getBorrowCodeOne())));
+                        codeTwo.setText("Return code: ".concat(Integer.toString(request.getBorrowCodeTwo())));
+                    } else {
+                        codeOne.setText("Initial code: ".concat(Integer.toString(request.getLendCodeOne())));
+                        codeTwo.setText("Return code: ".concat(Integer.toString(request.getLendCodeTwo())));
+                    }
 
-                    case "Closed":
-                        //Allow lender to cancel lending
-                        if (!userIsBorrower){
-                            cancelLend.setEnabled(true);
-                        }
-                        submitCode.setEnabled(true);
-                        status.setTextColor(Color.MAGENTA);
-                        break;
-
-                    case "Lent/Borrowed":
-                        startDate.append(request.getStartDate().toString());
-                        submitCode.setText("Confirm Return");
-                        submitCode.setEnabled(true);
-                        dispute.setEnabled(true);
-                        status.setTextColor(Color.BLUE);
-                        break;
-
-                    default: // Completed
-                        startDate.append(request.getStartDate().toString());
-                        returnDate.append(request.getReturnDate().toString());
-                        dispute.setEnabled(true);
-                        status.setTextColor(Color.GREEN);
-                }
-
-                //If under dispute, disable all possible actions
-                if (request.isDispute()){
-                    status.append(" (Under Dispute)");
-                    status.setTextColor(Color.RED);
+                    deleteReq.setEnabled(false);
+                    becomeLend.setVisibility(View.INVISIBLE);
+                    cancelLend.setEnabled(false);
                     submitCode.setEnabled(false);
                     dispute.setEnabled(false);
+
+                    // Status specific code
+                    switch (request.getStatus()) {
+                        case "Open":
+                            // Allow borrower to delete request
+                            if (userIsBorrower) {
+                                deleteReq.setEnabled(true);
+                            }
+                            //Enable become lender for potential lender
+                            else {
+                                becomeLend.setVisibility(View.VISIBLE);
+                            }
+                            break;
+
+                        case "Closed":
+                            //Allow lender to cancel lending
+                            if (!userIsBorrower) {
+                                cancelLend.setEnabled(true);
+                            }
+                            submitCode.setEnabled(true);
+                            status.setTextColor(Color.MAGENTA);
+                            break;
+
+                        case "Lent/Borrowed":
+                            startDate.setText("Borrowed at: ".concat(request.getStartDate().toString()));
+                            submitCode.setText("Confirm Return");
+                            submitCode.setEnabled(true);
+                            dispute.setEnabled(true);
+                            status.setTextColor(Color.BLUE);
+                            break;
+
+                        default: // Completed
+                            startDate.setText("Borrowed at: ".concat(request.getStartDate().toString()));
+                            returnDate.setText("Returned at: ".concat(request.getReturnDate().toString()));
+                            dispute.setEnabled(true);
+                            status.setTextColor(Color.GREEN);
+                    }
+
+                    //If under dispute, disable all possible actions
+                    if (request.isDispute()) {
+                        status.setText(status.getText().toString().concat(" (Under Dispute)"));
+                        status.setTextColor(Color.RED);
+                        submitCode.setEnabled(false);
+                        dispute.setEnabled(false);
+                    }
+
+                    lparams.dimAmount = 0.0f;
+                    getWindow().setAttributes(lparams);
+                    updateBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -172,15 +215,21 @@ public class BRview extends AppCompatActivity {
         db.collection("requests").document(request.getRequestID()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                db.collection("users").document(request.getBorrowerUID()).update("credits",FieldValue.increment(request.getCreditValue()));
+                db.collection("users").document(request.getBorrowerUID()).update("credits",FieldValue.increment(request.getCreditValue())).addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Intent intent = new Intent(getBaseContext(), MainMenu.class);
+                                startActivity(intent);
+                            }
+                        }
+                );
                 db.collection("users").document(request.getBorrowerUID()).update("requests", FieldValue.arrayRemove(request.getRequestID()));
-                Intent intent = new Intent(getBaseContext(), MainMenu.class);
-                startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
+                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -192,13 +241,12 @@ public class BRview extends AppCompatActivity {
                 db.collection("requests").document(request.getRequestID()).update(
                         "lenderName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
                         "lenderUID", userUID, "status", "Closed");
-                Intent intent = new Intent(getBaseContext(), MainMenu.class);
-                startActivity(intent);
+                Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
+                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -210,13 +258,12 @@ public class BRview extends AppCompatActivity {
                 db.collection("requests").document(request.getRequestID()).update(
                         "lenderName", "",
                         "lenderUID", "", "status", "Open");
-                Intent intent = new Intent(getBaseContext(), MainMenu.class);
-                startActivity(intent);
+                Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT);
+                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -233,8 +280,7 @@ public class BRview extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Intent intent = new Intent(getBaseContext(),MainMenu.class);
-                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -259,8 +305,7 @@ public class BRview extends AppCompatActivity {
                                 new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Intent intent = new Intent(getBaseContext(),MainMenu.class);
-                                        startActivity(intent);
+                                        Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                         );
