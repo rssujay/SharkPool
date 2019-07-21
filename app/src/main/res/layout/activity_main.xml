@@ -42,4 +42,23 @@
         android:layout_marginBottom="-300dp"
         android:contentDescription="@string/app_name"
         app:srcCompat="@drawable/sharkpool_trans" />
+
+    <ImageView
+        android:id="@+id/background_one"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-500dp"
+        android:src="@drawable/ic_single_wave"
+        android:scaleX="-1"/>
+
+    <ImageView
+        android:id="@+id/background_two"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-500dp"
+        android:src="@drawable/ic_single_wave"
+        android:scaleX="-1"/>
 </RelativeLayout>
