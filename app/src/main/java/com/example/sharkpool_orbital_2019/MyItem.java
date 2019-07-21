@@ -7,18 +7,16 @@ public class MyItem {
     private String itemName;
     private String itemType;
     private String uuid; //User's unique auth ID
-    private String token;
     private String lenditemID; //Unique ID for this lendList item
 
     public MyItem(){
     }
 
-    public void initialize(String Name, String Type, String token){
+    public void initialize(String Name, String Type){
         this.itemName = Name;
         this.itemType = Type;
         this.lenditemID = java.util.UUID.randomUUID().toString();
         this.uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        this.token = token;
     }
 
     public String getItemType() {
@@ -35,9 +33,5 @@ public class MyItem {
 
     public String getUUID() {
         return uuid;
-    }
-
-    public String getToken() {
-        return token;
     }
 }

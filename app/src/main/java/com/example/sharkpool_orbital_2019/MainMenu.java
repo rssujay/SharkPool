@@ -2,7 +2,6 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,9 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -104,9 +100,6 @@ public class MainMenu extends AppCompatActivity
                         //Update in user information
                         currUser.setNotificationToken(token);
                         db.collection("users").document(uid).update("notificationToken",currUser.getNotificationToken());
-
-                        //TODO centralized token will be better rather than batch writes
-                        getLL();
                     }
                 });
             }
@@ -116,35 +109,6 @@ public class MainMenu extends AppCompatActivity
         selectedFragment = new HistoryFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container,
                 selectedFragment).commit();
-    }
-
-    public void getLL() {
-        db.collection("users").document(uid).collection("lendList").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot document: queryDocumentSnapshots){
-                            list.add(document.getId());
-                        }
-                        updateTokens(list);
-                    }
-                });
-    }
-
-    public void updateTokens(ArrayList<String> list){
-        WriteBatch batch = db.batch();
-
-        for (int k = 0; k < list.size(); k++){
-            DocumentReference ref = db.collection("users").document(uid).collection("lendList").document(list.get(k));
-            batch.update(ref, "token", currUser.getNotificationToken());
-        }
-
-        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d("Firebase","Tokens updated");
-            }
-        });
     }
 
     @Override

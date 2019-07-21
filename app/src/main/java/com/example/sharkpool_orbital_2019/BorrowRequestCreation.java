@@ -1,8 +1,6 @@
 package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +10,9 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -138,7 +139,6 @@ public class BorrowRequestCreation extends AppCompatActivity {
                 public void onSuccess(Void aVoid) {
                     //Deduct credits from user
                     db.collection("users").document(uid).update("credits", FieldValue.increment(-creditValue));
-                    db.collection("users").document(uid).update("requests", FieldValue.arrayUnion(newReq.getRequestID()));
                     Intent intent = new Intent(BorrowRequestCreation.this, MainMenu.class);
                     startActivity(intent);
                 }

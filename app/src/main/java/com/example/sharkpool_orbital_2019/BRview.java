@@ -224,7 +224,6 @@ public class BRview extends AppCompatActivity {
                             }
                         }
                 );
-                db.collection("users").document(request.getBorrowerUID()).update("requests", FieldValue.arrayRemove(request.getRequestID()));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -235,36 +234,36 @@ public class BRview extends AppCompatActivity {
     }
 
     public void becomeLender(View v){
-        db.collection("users").document(userUID).update("requests",FieldValue.arrayUnion(request.getRequestID())).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                db.collection("requests").document(request.getRequestID()).update(
-                        "lenderName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
-                        "lenderUID", userUID, "status", "Closed");
-                Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
-            }
+        db.collection("requests").document(request.getRequestID()).update(
+                "lenderName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
+                "lenderUID", userUID, "status", "Closed")
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
+                    }
         });
     }
 
     public void cancelLender(View v){
-        db.collection("users").document(userUID).update("requests",FieldValue.arrayRemove(request.getRequestID())).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                db.collection("requests").document(request.getRequestID()).update(
-                        "lenderName", "",
-                        "lenderUID", "", "status", "Open");
-                Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
-            }
+        db.collection("requests").document(request.getRequestID()).update(
+                "lenderName", "",
+                "lenderUID", "", "status", "Open")
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(),"Transaction updated",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getBaseContext(),"Error, please check your connection",Toast.LENGTH_SHORT).show();
+                    }
         });
     }
 
