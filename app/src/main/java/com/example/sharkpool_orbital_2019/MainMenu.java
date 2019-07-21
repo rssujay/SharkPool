@@ -39,7 +39,6 @@ public class MainMenu extends AppCompatActivity
 
     AppUser currUser = new AppUser();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private String token;
     private ArrayList<String> list = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -100,25 +99,20 @@ public class MainMenu extends AppCompatActivity
                 FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
-                        token = instanceIdResult.getToken();
+                        String token = instanceIdResult.getToken();
+
+                        //Update in user information
+                        currUser.setNotificationToken(token);
+                        db.collection("users").document(uid).update("notificationToken",currUser.getNotificationToken());
+
+                        //TODO centralized token will be better rather than batch writes
                         getLL();
                     }
                 });
             }
         });
-        /*
-        // Ongoing requests fragment configuration
-        ArrayList<BorrowRequest> borrowRequests = new ArrayList<>();
-        RequestArrayAdaptor requestArrayAdaptor = new RequestArrayAdaptor(this, borrowRequests);
-        ListView listView = (ListView) findViewById(R.id.ongoingListView);
-        listView.setAdapter(requestArrayAdaptor);
 
-        //TEST FOR ONGOING REQUESTS DATA DISPLAY
-        BorrowRequest newRequest = new BorrowRequest();
-        newRequest.initialize("test_id","Pen");
-        requestArrayAdaptor.add(newRequest);
-        */
-        Fragment selectedFragment = null;
+        Fragment selectedFragment;
         selectedFragment = new HistoryFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container,
                 selectedFragment).commit();
@@ -142,7 +136,7 @@ public class MainMenu extends AppCompatActivity
 
         for (int k = 0; k < list.size(); k++){
             DocumentReference ref = db.collection("users").document(uid).collection("lendList").document(list.get(k));
-            batch.update(ref, "token", token);
+            batch.update(ref, "token", currUser.getNotificationToken());
         }
 
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -185,7 +179,6 @@ public class MainMenu extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -212,7 +205,7 @@ public class MainMenu extends AppCompatActivity
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    Fragment selectedFragment = null;
+                    Fragment selectedFragment;
 
                     switch (menuItem.getItemId()){
                         case R.id.ongoing:
