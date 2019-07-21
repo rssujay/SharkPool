@@ -73,7 +73,7 @@ exports.notifyLenders = functions.firestore.document('requests/{req}').onCreate(
         })
 });
 
-/*
+
 exports.disputeNotify = functions.firestore.document('disputes/{disp}')
 .onCreate((snap, context) => {
     const dispute = snap.data();
@@ -83,76 +83,93 @@ exports.disputeNotify = functions.firestore.document('disputes/{disp}')
 
     let token;
 
-    const payload = {
-        notification: {
-            title: "You are a potential lender!",
-            body: `${borrowerName} is looking for a ${itemName}`,
-        },
-
-        data: {
-            requestID: requestID,
-        }
-    };
-
     return db.collection('requests').doc(requestID).get()
-        .then(docSnap => {
+        .then(async docSnap => {
             let doc = docSnap.data();
             
             let borrower = doc.borrowerUID;
             let lender = doc.lenderUID;
 
             let personToNotify = (submitter === borrower)? borrower : lender;
-            
-                
-            if (tokens.length > 0){
-                promises.push(admin.messaging().sendToDevice(tokens,payload));
-            }
+            let otherPerson = (submitter === borrower)? doc.borrowerName: doc.lenderName;
 
-            return Promise.resolve(promises);
+            const payload = {
+                notification: {
+                    title: `Your transaction with ${otherPerson} is now under dispute.`,
+                    body: `An email will be sent to you within 48 hours with additional information.`,
+                },
+        
+                data: {
+                    requestID: requestID,
+                }
+            };
+            console.log(`Person to notify: ${personToNotify}`);
+            let query = await db.collection("users").doc(personToNotify).get();
+            token = query.data().notificationToken;
+            return admin.messaging().sendToDevice(token,payload);
         })
         .then((response) => {
-            console.log(`Successfully sent to ${tokenOwners}`);
+            console.log(`Dispute notification sent to: ${token}`);
             return 0;
         })
         .catch(error => console.log(error));
 });
 
-
 exports.progressTransaction = functions.firestore.document('requests/{req}')
-    .onUpdate((change, context) => {
-      // Retrieve the current and previous value
-      const data = change.after.data();
-      const previousData = change.before.data();
+    .onUpdate(async (change, context) => {
+    // Retrieve the current and previous value
+    const data = change.after.data();
+    const previousData = change.before.data();
 
-      //Setup variables
-      const requestID = data.id; 
-      const itemName = data.itemName;
+    //Setup variables
+    const requestID = data.requestID;
+     
+    const borrowerName = data.borrowerName;
+    const borrowerID = data.borrowerUID;
 
-      const borrowerID = data.borrowerUID;
-      const lenderID = data.lenderID;
+    const lenderName = data.lenderName;
+    const lenderID = data.lenderUID;
       
-      //Handle disputes first
-      if (data.dispute !== previousData.dispute){
-          
-        const payload = {
-            notification: {
-                title: `Your request for ${itemName} is now under dispute.`,
-                body: `${borrowerName} is looking for a ${itemName}`,
-            },
-
-            data: {
-                requestID: requestID,
-            }
-      }
-
-      if (data.status === previousData.status && data.dispute === previousData.dispute){
-          return null;
-      } 
-
-      // Retrieve the current count of name changes
-      let count = data.name_change_count;
-      if (!count) {
-        count = 0;
-      }
+    //Non status changes
+    if (data.status === previousData.status){
+        return null;
     }
-*/
+
+    const payloadBorrower = {
+        notification: {
+            title: `${borrowerName}, your transaction has been updated.`,
+            body: `Tap this notification to view details.`,
+        },
+    
+        data: {
+            requestID: requestID,
+        }
+    };
+
+    const payloadLender = {
+        notification: {
+            title: `${lenderName}, your transaction has been updated.`,
+            body: `Tap this notification to view details.`,
+        },
+    
+        data: {
+            requestID: requestID,
+        }
+    };
+
+    let promises = [];
+
+    if (lenderID.length > 0){
+        let lenderQuery = await db.collection("users").doc(lenderID).get();
+        const lenderToken = lenderQuery.data().notificationToken;
+        promises.push(admin.messaging().sendToDevice(lenderToken,payloadLender));
+        console.log(`Lender: ${lenderToken}`); 
+    }
+    
+    let borrowerQuery = await db.collection("users").doc(borrowerID).get();   
+    const borrowerToken = borrowerQuery.data().notificationToken;
+    promises.push(admin.messaging().sendToDevice(borrowerToken,payloadBorrower));
+    console.log(`Borrower: ${borrowerToken}`);
+
+    return Promise.all(promises).then((resp)=> console.log("Successfully sent."));
+});
