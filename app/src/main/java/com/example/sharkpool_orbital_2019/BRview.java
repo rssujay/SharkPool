@@ -95,7 +95,7 @@ public class BRview extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if (!documentSnapshot.exists()) {
-                    Toast.makeText(getApplicationContext(), "Transaction updated, please retry", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Transaction closed", Toast.LENGTH_SHORT).show();
                     finishAffinity();
                     Intent intent = new Intent(getApplicationContext(), MainMenu.class);
                     startActivity(intent);

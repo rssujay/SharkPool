@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
             getIntent().removeExtra("requestID");
         }
 
+
         final ImageView backgroundOne = (ImageView) findViewById(R.id.background_one);
         final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_two);
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             else{
-                                if (notifRedirect.isEmpty()) {
+                                if (notifRedirect == null || notifRedirect.isEmpty()) {
                                     Intent intent = new Intent(getApplicationContext(), MainMenu.class);
                                     startActivity(intent);
                                 }
