@@ -1,18 +1,25 @@
 package com.example.sharkpool_orbital_2019;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,8 +36,11 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -42,13 +52,20 @@ public class ChatActivity extends AppCompatActivity {
     final String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public String mChannelURL = "default";
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String currentPhotoPath;
 
     private RecyclerView mMessageRecycler;
     private ChatAdapter mMessageAdapter;
     private LinearLayoutManager mLayoutManager;
 
     private Button sendButton;
+    private Button cameraButton;
     private EditText chatbox;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Bitmap mImageBitmap;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +79,9 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         mMessageRecycler = findViewById(R.id.recycler_chat);
         sendButton = findViewById(R.id.button_chatbox_send);
+        cameraButton = findViewById(R.id.button_chatbox_cam);
         chatbox = findViewById(R.id.edittext_chatbox);
+        mImageView = findViewById(R.id.mImageView);
 
         //Double-checks whether user is connected to SendBird
 
@@ -139,7 +158,66 @@ public class ChatActivity extends AppCompatActivity {
                 mMessageAdapter.refresh();
             }
         });
+
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error in file creation
+                    }
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getBaseContext(),
+                                "com.example.android.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    }
+                }
+            }
+
+        });
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            try {
+                mImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(currentPhotoPath));
+                mImageView.setImageBitmap(mImageBitmap);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+            getBaseContext().sendBroadcast(mediaScanIntent);
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = "file:"+image.getAbsolutePath();
+        return image;
+    }
+
 
     private void createGroupChannel(List<String> ChatUIDs){
 

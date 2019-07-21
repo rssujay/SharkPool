@@ -24,7 +24,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="0dp"
         android:background="@color/very_light_yellow"
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -52,6 +52,24 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:maxLines="6"/>
+
+        <ImageView
+            android:id="@+id/mImageView"
+            android:layout_width="35dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/sharkpool_trans" />
+
+        <Button
+            android:id="@+id/button_chatbox_cam"
+            android:layout_width="34dp"
+            android:layout_height="33dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/ic_menu_camera"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button_chatbox_send"
