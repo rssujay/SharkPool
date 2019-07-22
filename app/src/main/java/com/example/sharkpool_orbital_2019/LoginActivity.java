@@ -23,12 +23,15 @@ import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class LoginActivity extends AppCompatActivity {
     private int RC_SIGN_IN = 123;
 
+    List<String> approvedAccounts = new ArrayList<>();
     private String uid;
     private String displayName;
     private String emailID;
@@ -60,7 +63,12 @@ public class LoginActivity extends AppCompatActivity {
             displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
             emailID = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-            if (!emailID.contains("gmail.com")) {
+            approvedAccounts.add("2008fbe@gmail.com");
+            approvedAccounts.add("2009fbe@gmail.com");
+            approvedAccounts.add("2010fbe@gmail.com");
+            approvedAccounts.add("2011fbe@gmail.com");
+
+            if (!emailID.endsWith("@u.nus.edu") && !approvedAccounts.contains(emailID)) {
                 deleteAccount();
             }
 
