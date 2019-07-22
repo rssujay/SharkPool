@@ -6,18 +6,6 @@
     <item android:title="Account">
         <menu>
             <item
-                android:id = "@+id/nav_stats"
-                android:icon = "@drawable/fui_ic_check_circle_black_128dp"
-                android:title="@string/menu_stats"
-                />
-
-            <item
-                android:id = "@+id/nav_settings"
-                android:icon = "@drawable/ic_menu_manage"
-                android:title = "@string/action_settings"
-                />
-
-            <item
                 android:id = "@+id/nav_sign_out"
                 android:icon = "@drawable/fui_ic_anonymous_white_24dp"
                 android:title = "@string/sign_out"
