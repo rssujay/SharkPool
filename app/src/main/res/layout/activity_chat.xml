@@ -17,7 +17,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/view"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:background="@color/very_light_yellow">
     </androidx.recyclerview.widget.RecyclerView>
 
     <!-- A horizontal line between the chatbox and RecyclerView -->
@@ -52,13 +53,6 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:maxLines="6"/>
-
-        <ImageView
-            android:id="@+id/mImageView"
-            android:layout_width="35dp"
-            android:layout_height="38dp"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/sharkpool_trans" />
 
         <Button
             android:id="@+id/button_chatbox_cam"

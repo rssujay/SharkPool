@@ -3,6 +3,7 @@ package com.example.sharkpool_orbital_2019;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -30,13 +31,21 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.BaseMessageParams;
+import com.sendbird.android.FileMessage;
+import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,7 +74,6 @@ public class ChatActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Bitmap mImageBitmap;
-    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +89,6 @@ public class ChatActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.button_chatbox_send);
         cameraButton = findViewById(R.id.button_chatbox_cam);
         chatbox = findViewById(R.id.edittext_chatbox);
-        mImageView = findViewById(R.id.mImageView);
 
         //Double-checks whether user is connected to SendBird
 
@@ -137,7 +144,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 1000);
+        }, 1500);
 
         mMessageRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             //@Nullable
@@ -185,11 +192,26 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { // image retrieval
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             try {
                 mImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(currentPhotoPath));
-                mImageView.setImageBitmap(mImageBitmap);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                mImageBitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                byte[] bitmapData = bos.toByteArray();
+                final File imageFile = new File(getBaseContext().getCacheDir(), "Image");
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                fos.write(bitmapData);
+                fos.flush();
+                try { if (fos != null) fos.close(); Log.d("SendBirdImage", "fos closed"); } catch(IOException e){ e.printStackTrace(); }
+                if (SendBird.getConnectionState() != SendBird.ConnectionState.OPEN){
+                    SendBird.connect(FirebaseAuth.getInstance().getUid(), new SendBird.ConnectHandler() {
+                        @Override
+                        public void onConnected(User user, SendBirdException e) {
+                                mMessageAdapter.sendImage(imageFile);
+                        }
+                    });
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -238,6 +260,8 @@ public class ChatActivity extends AppCompatActivity {
     private class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private static final int VIEW_TYPE_MESSAGE_SENT = 1;
         private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
+        private static final int VIEW_TYPE_IMAGE_SENT = 3;
+        private static final int VIEW_TYPE_IMAGE_RECEIVED = 4;
 
         private ArrayList<BaseMessage> mMessageList;
         private GroupChannel mChannel;
@@ -259,7 +283,7 @@ public class ChatActivity extends AppCompatActivity {
         // Retrieves 30 most recent messages.
         void refresh() {
             mChannel.getPreviousMessagesByTimestamp(Long.MAX_VALUE, true, 30, true,
-                    BaseChannel.MessageTypeFilter.USER, null, new BaseChannel.GetMessagesHandler() {
+                    BaseChannel.MessageTypeFilter.ALL, null, new BaseChannel.GetMessagesHandler() {
                         @Override
                         public void onResult(List<BaseMessage> list, SendBirdException e) {
                             if (e != null) {
@@ -278,7 +302,7 @@ public class ChatActivity extends AppCompatActivity {
         void loadPreviousMessages() {
             final long lastTimestamp = mMessageList.get(mMessageList.size() - 1).getCreatedAt();
             mChannel.getPreviousMessagesByTimestamp(lastTimestamp, false, 30, true,
-                    BaseChannel.MessageTypeFilter.USER, null, new BaseChannel.GetMessagesHandler() {
+                    BaseChannel.MessageTypeFilter.ALL, null, new BaseChannel.GetMessagesHandler() {
                         @Override
                         public void onResult(List<BaseMessage> list, SendBirdException e) {
                             if (e != null) {
@@ -314,19 +338,65 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
 
+        void sendImage(final File image) {
+
+            List<FileMessage.ThumbnailSize> thumbnailSizes = new ArrayList<>();
+            thumbnailSizes.add(new FileMessage.ThumbnailSize(240, 240));
+
+            FileMessageParams params = new FileMessageParams()
+                    .setFile(image)
+                    .setFileName("Image")
+                    .setThumbnailSizes(thumbnailSizes)
+                    .setFileSize((int) image.length()/1024)
+                    .setPushNotificationDeliveryOption(BaseMessageParams.PushNotificationDeliveryOption.DEFAULT);
+
+            mChannel.sendFileMessage(params, new BaseChannel.SendFileMessageHandler() {
+                @Override
+                public void onSent(FileMessage fileMessage, SendBirdException e) {
+                    if (e != null) {
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    mMessageList.add(0, fileMessage);
+                    notifyDataSetChanged();
+                    refresh();
+                }
+            });
+        }
+
 
         // Determines the appropriate ViewType according to the sender of the message.
         @Override
         public int getItemViewType(int position) {
-            UserMessage message = (UserMessage) mMessageList.get(position);
+            BaseMessage message = (BaseMessage) mMessageList.get(position);
 
-            if (message.getSender().getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-                // If the current user is the sender of the message
-                return VIEW_TYPE_MESSAGE_SENT;
-            } else {
-                // If some other user sent the message
-                return VIEW_TYPE_MESSAGE_RECEIVED;
+            if (message instanceof UserMessage){
+
+                UserMessage userMessage = (UserMessage) message;
+
+                if (userMessage.getSender().getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                    // If the current user is the sender of the message
+                    return VIEW_TYPE_MESSAGE_SENT;
+                } else {
+                    // If some other user sent the message
+                    return VIEW_TYPE_MESSAGE_RECEIVED;
+                }
+
+            } else if (message instanceof FileMessage){
+
+                FileMessage fileMessage = (FileMessage) message;
+
+                if (fileMessage.getType().toLowerCase().startsWith("image")) {
+                    if (fileMessage.getSender().getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                        Log.d("SendBirdImage", "Identification Success");
+                        return VIEW_TYPE_IMAGE_SENT;
+                    } else {
+                        return VIEW_TYPE_IMAGE_RECEIVED;
+                    }
+                }
             }
+            return -1;
         }
 
         // Inflates the appropriate layout according to the ViewType.
@@ -343,8 +413,16 @@ public class ChatActivity extends AppCompatActivity {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_message_received, parent, false);
                 return new ReceivedMessageHolder(view);
+            } else if (viewType == VIEW_TYPE_IMAGE_SENT) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_image_sent, parent, false);
+                Log.d("SendBirdImage", "inflation success");
+                return new SentImageHolder(view);
+            } else if (viewType == VIEW_TYPE_IMAGE_RECEIVED) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_image_received, parent, false);
+                return new ReceivedImageHolder(view);
             }
-
             return null;
         }
 
@@ -352,14 +430,20 @@ public class ChatActivity extends AppCompatActivity {
         @Nullable
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            UserMessage message = (UserMessage) mMessageList.get(position);
+            BaseMessage message = (BaseMessage) mMessageList.get(position);
 
             switch (holder.getItemViewType()) {
                 case VIEW_TYPE_MESSAGE_SENT:
-                    ((SentMessageHolder) holder).bind(message);
+                    ((SentMessageHolder) holder).bind((UserMessage) message);
                     break;
                 case VIEW_TYPE_MESSAGE_RECEIVED:
-                    ((ReceivedMessageHolder) holder).bind(message);
+                    ((ReceivedMessageHolder) holder).bind((UserMessage) message);
+                    break;
+                case VIEW_TYPE_IMAGE_SENT:
+                    ((SentImageHolder) holder).bind((FileMessage) message);
+                    break;
+                case VIEW_TYPE_IMAGE_RECEIVED:
+                    ((ReceivedImageHolder) holder).bind((FileMessage) message);
             }
         }
 
@@ -388,6 +472,41 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
+        private class SentImageHolder extends RecyclerView.ViewHolder {
+            TextView timeText;
+            final ImageView image;
+
+            SentImageHolder(View itemView) {
+                super(itemView);
+
+                image = (ImageView) itemView.findViewById(R.id.image_body_sent);
+                timeText = (TextView) itemView.findViewById(R.id.image_time_sent);
+
+            }
+
+            void bind(FileMessage message) {
+
+                Glide.with(getBaseContext())
+                        .load(message.getUrl())
+                        .asBitmap()
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .listener(null)
+                        .placeholder(R.drawable.sharkpool_trans)
+                        .into(image);
+
+
+                if (Build.VERSION.SDK_INT >=21 ) {
+                    image.setClipToOutline(true);
+                }
+
+
+                // Format the stored timestamp into a readable String using method.
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                timeText.setText(dateFormat.format(message.getCreatedAt()));
+            }
+        }
+
         // Messages sent by others display a profile image and nickname.
         private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
             TextView messageText, timeText;
@@ -401,6 +520,41 @@ public class ChatActivity extends AppCompatActivity {
 
             void bind(UserMessage message) {
                 messageText.setText(message.getMessage());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                timeText.setText(dateFormat.format(message.getCreatedAt()));
+            }
+        }
+
+        private class ReceivedImageHolder extends RecyclerView.ViewHolder {
+            TextView timeText;
+            ImageView image;
+
+            ReceivedImageHolder(View itemView) {
+                super(itemView);
+
+                image = (ImageView) itemView.findViewById(R.id.image_body_received);
+                timeText = (TextView) itemView.findViewById(R.id.image_time_received);
+
+            }
+
+            void bind(FileMessage message) {
+
+                Glide.with(getBaseContext())
+                        .load(message.getUrl())
+                        .asBitmap()
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .listener(null)
+                        .placeholder(R.drawable.sharkpool_trans)
+                        .into(image);
+
+
+                if (Build.VERSION.SDK_INT >=21 ) {
+                    image.setClipToOutline(true);
+                }
+
+
+                // Format the stored timestamp into a readable String using method.
                 SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
                 timeText.setText(dateFormat.format(message.getCreatedAt()));
             }

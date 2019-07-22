@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/very_light_yellow"
+    android:paddingTop="8dp">
+
+    <ImageView
+        android:id="@+id/image_body_sent"
+        android:layout_width="144dp"
+        android:layout_height="216dp"
+        android:background="@drawable/rounded_rectangle_pale_orange"
+        android:cropToPadding="true"
+        android:maxWidth="240dp"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:visibility="visible"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sharkpool_logo"
+        android:layout_marginEnd="8dp" />
+
+    <TextView
+        android:id="@+id/image_time_sent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:text="11:40"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/image_body_sent"
+        app:layout_constraintRight_toLeftOf="@+id/image_body_sent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
