@@ -290,10 +290,9 @@ public class ChatActivity extends AppCompatActivity {
                                 e.printStackTrace();
                                 return;
                             }
+
                             mMessageList = (ArrayList<BaseMessage>) list;
-
                             notifyDataSetChanged();
-
                         }
                     });
 
@@ -309,8 +308,8 @@ public class ChatActivity extends AppCompatActivity {
                                 e.printStackTrace();
                                 return;
                             }
-                            mMessageList.addAll(list);
 
+                            mMessageList.addAll(list);
                             notifyDataSetChanged();
                         }
                     });
@@ -389,7 +388,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 if (fileMessage.getType().toLowerCase().startsWith("image")) {
                     if (fileMessage.getSender().getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-                        Log.d("SendBirdImage", "Identification Success");
                         return VIEW_TYPE_IMAGE_SENT;
                     } else {
                         return VIEW_TYPE_IMAGE_RECEIVED;
@@ -416,7 +414,6 @@ public class ChatActivity extends AppCompatActivity {
             } else if (viewType == VIEW_TYPE_IMAGE_SENT) {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_image_sent, parent, false);
-                Log.d("SendBirdImage", "inflation success");
                 return new SentImageHolder(view);
             } else if (viewType == VIEW_TYPE_IMAGE_RECEIVED) {
                 view = LayoutInflater.from(parent.getContext())
