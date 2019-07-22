@@ -81,6 +81,8 @@
         <TextView
             android:id="@+id/brComments"
             android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text='Borrower comments: '
@@ -119,33 +121,34 @@
                 android:src="@drawable/spcredits"
                 />
 
-            <TextView
-                android:id="@+id/lendName"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.33"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_height="match_parent">
 
-                android:text="No active lender"
-                android:textAlignment="center"
-                />
+                <TextView
+                    android:id="@+id/lendName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="No active lender"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <Button
+                    android:id="@+id/becomeLender"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:onClick="becomeLender"
+                    android:text="Become lender"
+                    android:textAlignment="center"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lendName" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-
-
-        <Button
-            android:id="@+id/becomeLender"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-
-            android:text="Become lender"
-            android:textAlignment="center"
-            app:layout_constraintTop_toBottomOf="@id/linLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="40dp"
-            android:visibility="invisible"
-            android:onClick="becomeLender"
-            />
 
         <Button
             android:id="@+id/chatButton"
