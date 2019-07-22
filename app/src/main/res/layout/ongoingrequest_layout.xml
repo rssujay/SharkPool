@@ -10,7 +10,7 @@
     android:layout_marginRight="@dimen/mtrl_card_spacing"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="@android:color/secondary_text_dark"
+    app:cardBackgroundColor="@android:color/darker_gray"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp"

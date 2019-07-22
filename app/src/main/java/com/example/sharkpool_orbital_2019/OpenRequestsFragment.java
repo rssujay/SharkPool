@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,7 +39,7 @@ public class OpenRequestsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.openrequests_fragment, container, false);
         recyclerView = rootView.findViewById(R.id.openRequestsList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
 
         //Populate
         CollectionReference collRef = db.collection("requests");

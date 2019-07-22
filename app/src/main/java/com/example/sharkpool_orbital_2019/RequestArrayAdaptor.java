@@ -1,12 +1,13 @@
 package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
-
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Vector;
 
@@ -81,6 +82,11 @@ public class RequestArrayAdaptor extends RecyclerView.Adapter<RequestArrayAdapto
 
         String borrowerName = mDataset.elementAt(position).getBorrowerName();
         holder.borrowerName.setText(borrowerName + holder.borrowerName.getText());
+
+        RandomColors random = new RandomColors();
+        CardView temp = (CardView) holder.itemView;
+        Integer newcolor = random.getColor();
+        temp.setCardBackgroundColor(newcolor);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
