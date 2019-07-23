@@ -24,15 +24,16 @@ public class AppUser{
         this.emailAddress = emailAddress;
         this.credits = 100;
         this.tocAgreed = false;
+        this.foregroundNotifications = 0;
     }
 
     // This is used in main menu for initialization upon successful database retrieval
-    public void initialize(String displayName, String emailAddress, int credits, Boolean tocAgreed){
+    public void initialize(String displayName, String emailAddress, int credits, Boolean tocAgreed, int foregroundNotifications){
         this.displayName = displayName;
         this.emailAddress = emailAddress;
         this.credits = credits;
         this.tocAgreed = tocAgreed;
-        this.foregroundNotifications = 0;
+        this.foregroundNotifications = foregroundNotifications;
     }
 
     // This is used in main menu

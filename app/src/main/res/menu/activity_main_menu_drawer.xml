@@ -4,12 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id = "@+id/foregroundNotifications"
-            android:icon = "@drawable/ic_menu_send"
-            app:actionLayout="@layout/menu_counter"
-            android:title="Notifications"
+    <item
+        android:id = "@+id/foregroundNotifications"
+        android:icon = "@drawable/ic_menu_send"
+        app:actionLayout="@layout/menu_counter"
+        android:title="Notifications"
          />
 
     <item
@@ -17,5 +16,4 @@
         android:icon = "@drawable/fui_ic_anonymous_white_24dp"
         android:title = "@string/sign_out"
         />
-    </group>
 </menu>

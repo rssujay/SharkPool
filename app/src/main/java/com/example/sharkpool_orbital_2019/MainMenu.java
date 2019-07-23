@@ -2,6 +2,7 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +55,10 @@ public class MainMenu extends AppCompatActivity
         final TextView nav_name = hView.findViewById(R.id.nav_name);
         final TextView nav_email = hView.findViewById(R.id.nav_email);
 
+        final TextView notification_count = navigationView.getMenu().findItem(R.id.foregroundNotifications)
+                .getActionView().findViewById(R.id.notificationCounter);
+        Log.d("Notif","hi");
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -80,12 +85,12 @@ public class MainMenu extends AppCompatActivity
                 String emailAddress = documentSnapshot.get("emailAddress").toString();
                 int credits = ((Long) documentSnapshot.get("credits")).intValue();
                 Boolean tocAgreed = documentSnapshot.getBoolean("tocAgreed");
-                currUser.initialize(displayName,emailAddress, credits, tocAgreed);
+                int notifCount = ((Long) documentSnapshot.get("foregroundNotifications")).intValue();
+                currUser.initialize(displayName,emailAddress, credits, tocAgreed, notifCount);
                 nav_name.setText(currUser.getDisplayName());
                 nav_email.setText(currUser.getEmailAddress());
-
-                Integer tempCredits = currUser.getCredits();
-                nav_credit.append(tempCredits.toString());
+                nav_credit.append(Integer.toString(currUser.getCredits()));
+                notification_count.setText(Integer.toString(currUser.getForegroundNotifications()));
 
                 if(!currUser.isTocAgreed()){
                     Intent intent = new Intent(getBaseContext(), tocPage.class);
