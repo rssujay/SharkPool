@@ -77,6 +77,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (!sender.equals(senderID)){
             sendNotification(message, payload);
+            NotificationObject notificationObject = new NotificationObject();
+            notificationObject.initialize(payload);
         }
 
     }
