@@ -1,9 +1,11 @@
 package com.example.sharkpool_orbital_2019;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -21,6 +23,8 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.shadow.com.google.gson.JsonElement;
 import com.sendbird.android.shadow.com.google.gson.JsonObject;
 import com.sendbird.android.shadow.com.google.gson.JsonParser;
+
+import java.util.List;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -86,12 +90,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, "Sharkpool")
-                        .setSmallIcon(R.drawable.spcredits) //TODO: Uploading Small Logo
+                        .setSmallIcon(R.drawable.sharkpool_trans) //TODO: Uploading Small Logo
                         .setContentTitle("New message")
                         .setContentText(message)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
+                        .setContentIntent(pendingIntent)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setPriority(Notification.PRIORITY_MAX);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -100,13 +106,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("Sharkpool",
                     "Sharkpool",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 
         notificationManager.notify(notif_id, notificationBuilder.build());
 
-        if (notif_id == 49) notif_id = 0; // displays 50 latest notifications
+        if (notif_id == 29) notif_id = 0; // displays 50 latest notifications
         else notif_id++;
     }
+
 }
