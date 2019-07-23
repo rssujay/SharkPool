@@ -192,6 +192,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed(){
+        SendBird.disconnect(new SendBird.DisconnectHandler() {
+            @Override
+            public void onDisconnected() {
+                finish();
+            }
+        });
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { // image retrieval
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             try {

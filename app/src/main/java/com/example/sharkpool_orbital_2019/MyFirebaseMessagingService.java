@@ -1,5 +1,6 @@
 package com.example.sharkpool_orbital_2019;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -72,8 +73,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (!sender.equals(senderID)){
             sendNotification(message, payload);
-            Log.d("SendBird", senderID + " success " + sender);
         }
+
     }
 
     public void sendNotification(String message, JsonElement payload){
