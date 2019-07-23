@@ -6,14 +6,16 @@ public class AppUser{
     private int credits;
     private boolean tocAgreed;
     private String notificationToken;
+    private int foregroundNotifications;
 
     public AppUser(){}
 
-    //Minimal version - used in BR Creation and Main Menu (default)
+    //Minimal version - used in BR Creation and Main Menu (default value before database retrieval)
     public void initialize(String displayName, String emailAddress, int credits){
         this.displayName = displayName;
         this.emailAddress = emailAddress;
         this.credits = credits;
+        this.foregroundNotifications = 0;
     }
 
     //For creation of new user only
@@ -24,12 +26,13 @@ public class AppUser{
         this.tocAgreed = false;
     }
 
-    // This is used in main menu
+    // This is used in main menu for initialization upon successful database retrieval
     public void initialize(String displayName, String emailAddress, int credits, Boolean tocAgreed){
         this.displayName = displayName;
         this.emailAddress = emailAddress;
         this.credits = credits;
         this.tocAgreed = tocAgreed;
+        this.foregroundNotifications = 0;
     }
 
     // This is used in main menu
@@ -56,4 +59,10 @@ public class AppUser{
     public String getNotificationToken() {
         return notificationToken;
     }
+
+    public int getForegroundNotifications() {
+        return foregroundNotifications;
+    }
 }
+
+
