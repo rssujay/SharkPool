@@ -168,7 +168,15 @@ public class LoginActivity extends AppCompatActivity {
                         signOutAccount();
                     }
                 });
+
+                SendBird.disconnect(new SendBird.DisconnectHandler() { //disconnects to ensure chat notifications appear
+                    @Override
+                    public void onDisconnected() {
+                        return;
+                    }
+                });
             }
         });
+
     }
 }

@@ -3,6 +3,7 @@ package com.example.sharkpool_orbital_2019;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.se.omapi.SEService;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -109,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
                             else{
                                 if (notifRedirect == null || notifRedirect.isEmpty()) {
                                     Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+                                    SendBird.disconnect(new SendBird.DisconnectHandler() { //disconnects to ensure chat notifications appear
+                                        @Override
+                                        public void onDisconnected() {
+                                            return;
+                                        }
+                                    });
                                     startActivity(intent);
                                 }
 
@@ -116,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = new Intent(getApplicationContext(), BRview.class);
                                     intent.putExtra("initiator", notifRedirect);
                                     notifRedirect = "";
+                                    SendBird.disconnect(new SendBird.DisconnectHandler() { //disconnects to ensure chat notifications appear
+                                        @Override
+                                        public void onDisconnected() {
+                                            return;
+                                        }
+                                    });
                                     startActivity(intent);
                                 }
                             }
