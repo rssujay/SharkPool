@@ -37,7 +37,6 @@ public class MainMenu extends AppCompatActivity
     AppUser currUser = new AppUser();
     static final int request_code = 4005; //this is for notifications count update when user returns from notificationActivity
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private ArrayList<String> list = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -160,7 +159,6 @@ public class MainMenu extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_sign_out){
@@ -176,14 +174,6 @@ public class MainMenu extends AppCompatActivity
         }
 
         if (id == R.id.foregroundNotifications){
-            /*
-            //This code was to create a notificationObject for testing
-            NotificationObject temp = new NotificationObject();
-            temp.initialize();
-            db.collection("users").document(uid).collection("notificationsList").document(temp.getNotificationUUID()).set(temp);
-            */
-
-            //This is the proper code
             Intent intent = new Intent(getApplicationContext(), NotificationActivity.class);
             startActivityForResult(intent,request_code);
         }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,8 +43,9 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
 
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public NotifAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NotifAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
         context = parent.getContext();
         View v = LayoutInflater.from(parent.getContext())
@@ -54,7 +56,7 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder( @NonNull final MyViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.notificationTitle.setText(mDataset.elementAt(position).getNotifTitle());

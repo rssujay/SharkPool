@@ -2,26 +2,22 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
-
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
 abstract public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
 
-    Context mContext;
+    private Context mContext;
     private Paint mClearPaint;
     private ColorDrawable mBackground;
-    private int backgroundColor;
     private Drawable deleteDrawable;
     private int intrinsicWidth;
     private int intrinsicHeight;
@@ -30,7 +26,6 @@ abstract public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
     SwipeToDeleteCallback(Context context) {
         mContext = context;
         mBackground = new ColorDrawable();
-        backgroundColor = Color.parseColor("#b80f0a");
         mClearPaint = new Paint();
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         deleteDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_delete_icon);
@@ -66,7 +61,6 @@ abstract public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
             return;
         }
 
-        //mBackground.setColor(backgroundColor);
         mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
         mBackground.draw(c);
 
@@ -76,18 +70,15 @@ abstract public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
         int deleteIconRight = itemView.getRight() - deleteIconMargin;
         int deleteIconBottom = deleteIconTop + intrinsicHeight;
 
-
         deleteDrawable.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom);
         deleteDrawable.draw(c);
 
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
-
     }
 
     private void clearCanvas(Canvas c, Float left, Float top, Float right, Float bottom) {
         c.drawRect(left, top, right, bottom, mClearPaint);
-
     }
 
     @Override

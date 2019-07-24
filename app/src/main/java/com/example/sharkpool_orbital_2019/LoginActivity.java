@@ -63,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
             displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
             emailID = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
+            // accounts used for testing
             approvedAccounts.add("2008fbe@gmail.com");
             approvedAccounts.add("2009fbe@gmail.com");
             approvedAccounts.add("2010fbe@gmail.com");
@@ -171,9 +172,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 SendBird.disconnect(new SendBird.DisconnectHandler() { //disconnects to ensure chat notifications appear
                     @Override
-                    public void onDisconnected() {
-                        return;
-                    }
+                    public void onDisconnected() { }
                 });
             }
         });

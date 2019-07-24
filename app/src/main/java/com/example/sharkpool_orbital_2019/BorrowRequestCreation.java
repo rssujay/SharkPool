@@ -29,7 +29,6 @@ import java.util.List;
 
 
 public class BorrowRequestCreation extends AppCompatActivity {
-    private static final String TAG = "BorrowRequestCreation";
 
     AppUser currUser = new AppUser();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -108,7 +107,7 @@ public class BorrowRequestCreation extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(BorrowRequestCreation.this, "Error, please reload", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BorrowRequestCreation.this, "Error, please reload.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -127,7 +126,7 @@ public class BorrowRequestCreation extends AppCompatActivity {
         boolean recommendations = recommendationsEntry.isChecked();
 
         if (uid.isEmpty() || itemName.isEmpty() || itemType.isEmpty() || creditValue < 0){
-            Toast.makeText(BorrowRequestCreation.this,"Please fill in the required fields",Toast.LENGTH_SHORT).show();
+            Toast.makeText(BorrowRequestCreation.this,"Please fill in the required fields.",Toast.LENGTH_SHORT).show();
         }
 
         else{
@@ -147,7 +146,7 @@ public class BorrowRequestCreation extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(BorrowRequestCreation.this,
-                                    "Error, please check your connection", Toast.LENGTH_SHORT).show();
+                                    "Error, please check your connection.", Toast.LENGTH_SHORT).show();
                         }
                     });
         }

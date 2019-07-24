@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_one);
-        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_two);
+        final ImageView backgroundOne = findViewById(R.id.background_one);
+        final ImageView backgroundTwo = findViewById(R.id.background_two);
 
         final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
         animator.setRepeatCount(ValueAnimator.INFINITE);

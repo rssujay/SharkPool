@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -106,11 +107,9 @@ public class ChatActivity extends AppCompatActivity {
                             SendBird.registerPushTokenForCurrentUser(instanceIdResult.getToken(), new SendBird.RegisterPushTokenWithStatusHandler() {
                                 @Override
                                 public void onRegistered(SendBird.PushTokenRegistrationStatus status, SendBirdException e) {
-                                    if (e != null) {        // Error.
-                                        Log.d("SendBirdPush", "Token creation failure");
+                                    if (e != null) {        // Error
                                         return;
                                     }
-                                    Log.d("SendBirdPush", "Token creation success");
                                 }
                             });
                         }
@@ -136,7 +135,6 @@ public class ChatActivity extends AppCompatActivity {
                     public void onResult(GroupChannel groupChannel, SendBirdException e) {
                         if (e != null) { //error
                             Toast.makeText(getApplicationContext(), "Channel getting error!", Toast.LENGTH_LONG).show();
-                            Log.d("URL_error", "Error: " + mChannelURL);
                             return;
                         }
                         mMessageAdapter = new ChatAdapter(groupChannel);
@@ -144,7 +142,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 1500);
+        }, 1100);
 
         mMessageRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             //@Nullable
@@ -213,7 +211,7 @@ public class ChatActivity extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(imageFile);
                 fos.write(bitmapData);
                 fos.flush();
-                try { if (fos != null) fos.close(); Log.d("SendBirdImage", "fos closed"); } catch(IOException e){ e.printStackTrace(); }
+                try { fos.close(); } catch(IOException e){ e.printStackTrace(); }
                 if (SendBird.getConnectionState() != SendBird.ConnectionState.OPEN){
                     SendBird.connect(FirebaseAuth.getInstance().getUid(), new SendBird.ConnectHandler() {
                         @Override
@@ -256,9 +254,7 @@ public class ChatActivity extends AppCompatActivity {
         GroupChannel.createChannelWithUserIds(ChatUIDs, true, new GroupChannel.GroupChannelCreateHandler() {
             @Override
             public void onResult(final GroupChannel groupChannel, SendBirdException e){
-                if (e != null) {
-                    // Error!
-                    Log.d("URL_error", "An unknown error occurred.");
+                if (e != null) { // Error
                     return;
                 }
                 mChannelURL = groupChannel.getUrl().trim();
@@ -281,6 +277,7 @@ public class ChatActivity extends AppCompatActivity {
             mChannel = channel;
 
             refresh();
+            // Below code refreshes chat every half-second
             Timer mTimer = new Timer();
             mTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -323,12 +320,6 @@ public class ChatActivity extends AppCompatActivity {
                             notifyDataSetChanged();
                         }
                     });
-        }
-
-        // Appends a new message to the beginning of the message list.
-        void appendMessage(UserMessage message) {
-            mMessageList.add(0, message);
-            notifyDataSetChanged();
         }
 
         // Sends a new message, and appends the sent message to the beginning of the message list.
@@ -378,7 +369,7 @@ public class ChatActivity extends AppCompatActivity {
         // Determines the appropriate ViewType according to the sender of the message.
         @Override
         public int getItemViewType(int position) {
-            BaseMessage message = (BaseMessage) mMessageList.get(position);
+            BaseMessage message = mMessageList.get(position);
 
             if (message instanceof UserMessage){
 
@@ -408,9 +399,8 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // Inflates the appropriate layout according to the ViewType.
-        @Nullable
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
 
             if (viewType == VIEW_TYPE_MESSAGE_SENT) {
@@ -434,10 +424,9 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // Passes the message object to a ViewHolder so that the contents can be bound to UI.
-        @Nullable
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            BaseMessage message = (BaseMessage) mMessageList.get(position);
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            BaseMessage message = mMessageList.get(position);
 
             switch (holder.getItemViewType()) {
                 case VIEW_TYPE_MESSAGE_SENT:
@@ -466,8 +455,8 @@ public class ChatActivity extends AppCompatActivity {
             SentMessageHolder(View itemView) {
                 super(itemView);
 
-                messageText = (TextView) itemView.findViewById(R.id.text_message_body_sent);
-                timeText = (TextView) itemView.findViewById(R.id.text_message_time_sent);
+                messageText = itemView.findViewById(R.id.text_message_body_sent);
+                timeText = itemView.findViewById(R.id.text_message_time_sent);
             }
 
             void bind(UserMessage message) {
@@ -486,8 +475,8 @@ public class ChatActivity extends AppCompatActivity {
             SentImageHolder(View itemView) {
                 super(itemView);
 
-                image = (ImageView) itemView.findViewById(R.id.image_body_sent);
-                timeText = (TextView) itemView.findViewById(R.id.image_time_sent);
+                image = itemView.findViewById(R.id.image_body_sent);
+                timeText = itemView.findViewById(R.id.image_time_sent);
 
             }
 
@@ -521,8 +510,8 @@ public class ChatActivity extends AppCompatActivity {
             ReceivedMessageHolder(View itemView) {
                 super(itemView);
 
-                messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-                timeText = (TextView) itemView.findViewById(R.id.text_message_time);
+                messageText = itemView.findViewById(R.id.text_message_body);
+                timeText = itemView.findViewById(R.id.text_message_time);
             }
 
             void bind(UserMessage message) {
@@ -539,8 +528,8 @@ public class ChatActivity extends AppCompatActivity {
             ReceivedImageHolder(View itemView) {
                 super(itemView);
 
-                image = (ImageView) itemView.findViewById(R.id.image_body_received);
-                timeText = (TextView) itemView.findViewById(R.id.image_time_received);
+                image = itemView.findViewById(R.id.image_body_received);
+                timeText = itemView.findViewById(R.id.image_time_received);
 
             }
 
@@ -559,7 +548,6 @@ public class ChatActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >=21 ) {
                     image.setClipToOutline(true);
                 }
-
 
                 // Format the stored timestamp into a readable String using method.
                 SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());

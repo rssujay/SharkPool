@@ -59,7 +59,6 @@ public class BRview extends AppCompatActivity {
     private Button deleteReq;
     private Button cancelLend;
     private Button dispute;
-    private Button chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,6 @@ public class BRview extends AppCompatActivity {
         cancelLend = findViewById(R.id.lendCancel);
         dispute = findViewById(R.id.dispute);
         submitCode = findViewById(R.id.submitCode);
-        chat = findViewById(R.id.chatButton);
         updateBar = findViewById(R.id.updateBar);
 
         Bundle bundle = getIntent().getExtras();

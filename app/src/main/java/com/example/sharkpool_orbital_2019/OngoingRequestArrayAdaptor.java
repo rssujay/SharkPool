@@ -2,6 +2,7 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,20 +62,20 @@ public class OngoingRequestArrayAdaptor extends RecyclerView.Adapter<OngoingRequ
 
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public OngoingRequestArrayAdaptor.MyViewHolder onCreateViewHolder(ViewGroup parent,
+    public OngoingRequestArrayAdaptor.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                                       int viewType) {
         // create a new view
         CardView v = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.ongoingrequest_layout, parent, false);
 
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return new MyViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final OngoingRequestArrayAdaptor.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final OngoingRequestArrayAdaptor.MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         CardView temp = (CardView) holder.itemView;

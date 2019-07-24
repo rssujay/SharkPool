@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,21 +57,21 @@ public class RequestArrayAdaptor extends RecyclerView.Adapter<RequestArrayAdapto
 
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public RequestArrayAdaptor.MyViewHolder onCreateViewHolder(ViewGroup parent,
+    public RequestArrayAdaptor.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                      int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.openrequest_layout, null);
 
 
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return new MyViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final RequestArrayAdaptor.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RequestArrayAdaptor.MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.itemName.setText(mDataset.elementAt(position).getItemName());
