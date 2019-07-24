@@ -16,6 +16,8 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sendbird.android.SendBird;
@@ -36,8 +38,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
     }
     */
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static int notif_id = 0;
-    public String senderID = FirebaseAuth.getInstance().getUid();
+    public String myID = FirebaseAuth.getInstance().getCurrentUser().getUid(); //userID
 
     public static String getToken(Context context) {
         return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
@@ -75,10 +78,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d("SendBirdPush", "Message received.");
         String sender = payload.getAsJsonObject().get("sender").getAsJsonObject().get("id").toString().substring(1,29);
 
-        if (!sender.equals(senderID)){
+        if (!sender.equals(myID)){
             sendNotification(message, payload);
             NotificationObject notificationObject = new NotificationObject();
             notificationObject.initialize(payload);
+            db.collection("users")
+                    .document(myID)
+                    .collection("notificationsList")
+                    .document(notificationObject.getNotificationUUID())
+                    .set(notificationObject);
+            db.collection("users")
+                    .document(myID)
+                    .update("foregroundNotifications", FieldValue.increment(1));
         }
 
     }
@@ -92,7 +103,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, "Sharkpool")
-                        .setSmallIcon(R.drawable.sharkpool_trans) //TODO: Uploading Small Logo
+                        .setSmallIcon(R.drawable.sharkpool_trans)
                         .setContentTitle("New message")
                         .setContentText(message)
                         .setAutoCancel(true)

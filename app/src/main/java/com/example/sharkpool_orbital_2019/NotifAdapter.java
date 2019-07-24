@@ -1,5 +1,7 @@
 package com.example.sharkpool_orbital_2019;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Vector;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder> {
     private  Vector<NotificationObject> mDataset;
+    private Context context;
 
     protected static class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView notificationImage;
@@ -42,6 +47,7 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
     @Override
     public NotifAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
+        context = parent.getContext();
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.notifobject_layout, parent, false);
 
@@ -56,8 +62,10 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
         holder.notificationTitle.setText(mDataset.elementAt(position).getNotifTitle());
         holder.notificationBody.setText(mDataset.elementAt(position).getNotifBody());
 
+        final boolean isSendBird = (mDataset.elementAt(position).getBrID().equals(""));
+
         if (mDataset.elementAt(position).getBrID().isEmpty()){
-            holder.notificationImage.setImageResource(R.drawable.shape_bg_incoming_bubble);
+            holder.notificationImage.setImageResource(R.drawable.ic_menu_send);
         }
 
         /*
@@ -82,6 +90,18 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
             public boolean onLongClick(View v) {
                 holder.notificationBody.setText("Long click");
                 DBupdate(mDataset.elementAt(position).getNotificationUUID());
+                //TODO: Redirection
+                if (isSendBird){
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    String otherID = mDataset.elementAt(position).getOtherID();
+                    intent.putExtra("otherID", otherID);
+                    context.startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(context, BRview.class);
+                    intent.putExtra("initiator", mDataset.elementAt(position).getBrID());
+                    context.startActivity(intent);
+                }
                 return false;
             }
         });
@@ -101,4 +121,5 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
     public int getItemCount() {
         return mDataset.size();
     }
+
 }

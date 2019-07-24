@@ -225,7 +225,15 @@ public class MainMenu extends AppCompatActivity
                     NavigationView navigationView = findViewById(R.id.nav_view);
                     final TextView notification_count = navigationView.getMenu().findItem(R.id.foregroundNotifications)
                             .getActionView().findViewById(R.id.notificationCounter);
-                    notification_count.setText(documentSnapshot.getLong("foregroundNotifications").toString());
+                    long notifcount_raw = documentSnapshot.getLong("foregroundNotifications");
+                    String displayedNotifCount;
+                    if (notifcount_raw > 8){
+                        displayedNotifCount = "9+";
+                    }
+                    else {
+                        displayedNotifCount = Long.toString(notifcount_raw);
+                    }
+                    notification_count.setText(displayedNotifCount);
                 }
             });
         }

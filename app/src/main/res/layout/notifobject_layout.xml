@@ -8,44 +8,42 @@
     android:layout_marginLeft="@dimen/mtrl_card_spacing"
     android:layout_marginTop="@dimen/mtrl_card_spacing"
     android:layout_marginRight="@dimen/mtrl_card_spacing"
-    app:cardBackgroundColor="#FFFFFF"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="4dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp"
-    app:cardPreventCornerOverlap="true"
+    app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="8dp">
 
         <LinearLayout
             android:id="@+id/linLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/notificationImage"
                 android:layout_width="0dp"
-                android:layout_weight="0.1"
                 android:layout_height="30dp"
 
+                android:layout_weight="0.1"
                 android:contentDescription="Icon"
-                android:src="@drawable/spcredits"
-                android:id="@+id/notificationImage"
-                />
+                android:src="@drawable/spcredits" />
 
             <TextView
                 android:id="@+id/notificationTitle"
                 android:layout_width="0dp"
-                android:layout_weight="0.8"
                 android:layout_height="match_parent"
+                android:layout_weight="0.8"
                 android:paddingStart="6dp"
                 android:paddingTop="3dp"
                 android:paddingEnd="3dp"
