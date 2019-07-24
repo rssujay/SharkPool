@@ -2,13 +2,13 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,6 +35,7 @@ public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     AppUser currUser = new AppUser();
+    static final int request_code = 4005; //this is for notifications count update when user returns from notificationActivity
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private ArrayList<String> list = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -57,7 +58,6 @@ public class MainMenu extends AppCompatActivity
 
         final TextView notification_count = navigationView.getMenu().findItem(R.id.foregroundNotifications)
                 .getActionView().findViewById(R.id.notificationCounter);
-        Log.d("Notif","hi");
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -165,6 +165,19 @@ public class MainMenu extends AppCompatActivity
             });
         }
 
+        if (id == R.id.foregroundNotifications){
+            /*
+            //This code was to create a notificationObject for testing
+            NotificationObject temp = new NotificationObject();
+            temp.initialize();
+            db.collection("users").document(uid).collection("notificationsList").document(temp.getNotificationUUID()).set(temp);
+            */
+
+            //This is the proper code
+            Intent intent = new Intent(getApplicationContext(), NotificationActivity.class);
+            startActivityForResult(intent,request_code);
+        }
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -200,5 +213,22 @@ public class MainMenu extends AppCompatActivity
                 }
             };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == request_code){
+            db.collection("users").document(uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    currUser.setForegroundNotifications(documentSnapshot.getLong("foregroundNotifications").intValue());
 
+                    NavigationView navigationView = findViewById(R.id.nav_view);
+                    final TextView notification_count = navigationView.getMenu().findItem(R.id.foregroundNotifications)
+                            .getActionView().findViewById(R.id.notificationCounter);
+                    notification_count.setText(documentSnapshot.getLong("foregroundNotifications").toString());
+                }
+            });
+        }
+    }
 }
+

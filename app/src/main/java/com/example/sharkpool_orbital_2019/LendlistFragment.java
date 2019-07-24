@@ -86,12 +86,6 @@ public class LendlistFragment extends Fragment {
                 String updateCount = "Number of items in your lending list: ".concat(itemCount.toString());
                 itemCountText.setText(updateCount);
 
-                recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        return false;
-                    }
-                });
                 recyclerView.setAdapter(mData);
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
             }
@@ -167,7 +161,7 @@ public class LendlistFragment extends Fragment {
                     types.add(document.getId());
                 }
 
-                ArrayAdapter options = new ArrayAdapter<String>
+                ArrayAdapter options = new ArrayAdapter<>
                         (getContext(), R.layout.support_simple_spinner_dropdown_item, types);
                 myNewItemTypeEntry.setAdapter(options);
             }})

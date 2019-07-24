@@ -64,6 +64,10 @@ public class AppUser{
     public int getForegroundNotifications() {
         return foregroundNotifications;
     }
+
+    public void setForegroundNotifications(int foregroundNotifications) {
+        this.foregroundNotifications = foregroundNotifications;
+    }
 }
 
 
