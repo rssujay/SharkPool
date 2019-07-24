@@ -1,11 +1,9 @@
 package com.example.sharkpool_orbital_2019;
 
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -23,10 +21,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.shadow.com.google.gson.JsonElement;
-import com.sendbird.android.shadow.com.google.gson.JsonObject;
 import com.sendbird.android.shadow.com.google.gson.JsonParser;
 
-import java.util.List;
+import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -72,26 +69,40 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        String message = remoteMessage.getData().get("message");
-        JsonElement payload = new JsonParser().parse(remoteMessage.getData().get("sendbird"));
+        Map<String,String> data = remoteMessage.getData();
+        NotificationObject notificationObject = new NotificationObject();
 
-        Log.d("SendBirdPush", "Message received.");
-        String sender = payload.getAsJsonObject().get("sender").getAsJsonObject().get("id").toString().substring(1,29);
+        //FCM case
+        if (data.get("requestID") != null){
+            String notifTitle = remoteMessage.getNotification().getTitle();
+            String notifBody = remoteMessage.getNotification().getBody();
+            String requestID = data.get("requestID");
 
-        if (!sender.equals(myID)){
-            sendNotification(message, payload);
-            NotificationObject notificationObject = new NotificationObject();
-            notificationObject.initialize(payload);
-            db.collection("users")
-                    .document(myID)
-                    .collection("notificationsList")
-                    .document(notificationObject.getNotificationUUID())
-                    .set(notificationObject);
-            db.collection("users")
-                    .document(myID)
-                    .update("foregroundNotifications", FieldValue.increment(1));
+            notificationObject.initialize(notifTitle, notifBody, requestID);
         }
 
+        // SendBird case
+        else {
+            String message = remoteMessage.getData().get("message");
+            JsonElement payload = new JsonParser().parse(remoteMessage.getData().get("sendbird"));
+
+            Log.d("SendBirdPush", "Message received.");
+            String sender = payload.getAsJsonObject().get("sender").getAsJsonObject().get("id").toString().substring(1, 29);
+
+            if (!sender.equals(myID)) {
+                sendNotification(message, payload);
+                notificationObject.initialize(payload);
+            }
+        }
+
+        db.collection("users")
+                .document(myID)
+                .collection("notificationsList")
+                .document(notificationObject.getNotificationUUID())
+                .set(notificationObject);
+        db.collection("users")
+                .document(myID)
+                .update("foregroundNotifications", FieldValue.increment(1));
     }
 
     public void sendNotification(String message, JsonElement payload){

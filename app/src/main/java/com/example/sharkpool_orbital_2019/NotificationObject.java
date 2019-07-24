@@ -33,12 +33,12 @@ public class NotificationObject {
     }
 
     // Initialization for FCM notifications
-    public void initialize(){
+    public void initialize(String notifTitle, String notifBody, String requestID){
         this.notificationUUID = java.util.UUID.randomUUID().toString();
-        this.notifTitle = "tempTitle";
-        this.notifBody ="tempBody";
-        this.otherID = "123456";
-        this.brID = "";
+        this.notifTitle = notifTitle;
+        this.notifBody = notifBody;
+        this.otherID = "";
+        this.brID = requestID;
     }
 
     public String getNotifBody() {

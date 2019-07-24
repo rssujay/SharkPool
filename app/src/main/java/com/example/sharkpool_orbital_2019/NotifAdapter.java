@@ -17,8 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Vector;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
 public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder> {
     public Vector<NotificationObject> mDataset;
     private Context context;
@@ -62,9 +60,9 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
         holder.notificationTitle.setText(mDataset.elementAt(position).getNotifTitle());
         holder.notificationBody.setText(mDataset.elementAt(position).getNotifBody());
 
-        final boolean isSendBird = (mDataset.elementAt(position).getBrID().equals(""));
+        final boolean isSendBird = (mDataset.elementAt(position).getBrID().isEmpty());
 
-        if (mDataset.elementAt(position).getBrID().isEmpty()){
+        if (isSendBird){
             holder.notificationImage.setImageResource(R.drawable.ic_menu_send);
         }
         else{
@@ -72,30 +70,10 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
             holder.notificationImage.setImageResource(R.drawable.credits);
         }
 
-        /*
-        holder.itemView.setOnTouchListener(new OnSwipeTouchListener(holder.itemView.getContext()){
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSwipeLeft() {
-                holder.notificationBody.setText("Swipe Left");
+            public void onClick(View v) {
                 DBupdate(mDataset.elementAt(position).getNotificationUUID());
-
-            }
-
-            @Override
-            public void onSwipeRight() {
-                holder.notificationBody.setText("Swipe Right");
-                DBupdate(mDataset.elementAt(position).getNotificationUUID());
-            }
-        });
-        */
-
-
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                holder.notificationBody.setText("Long click");
-                DBupdate(mDataset.elementAt(position).getNotificationUUID());
-                //TODO: Redirection
                 if (isSendBird){
                     Intent intent = new Intent(context, ChatActivity.class);
                     String otherID = mDataset.elementAt(position).getOtherID();
@@ -107,9 +85,9 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
                     intent.putExtra("initiator", mDataset.elementAt(position).getBrID());
                     context.startActivity(intent);
                 }
-                return false;
             }
         });
+
     }
 
     public void DBupdate(String docID){

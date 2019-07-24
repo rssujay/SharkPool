@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Swipe to dismiss \nOR \nPress and hold to open"
+        android:text="Swipe to dismiss \nOR \nTap to open"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:background="@color/dark_blue"

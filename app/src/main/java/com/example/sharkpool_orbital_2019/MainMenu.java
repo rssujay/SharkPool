@@ -90,7 +90,17 @@ public class MainMenu extends AppCompatActivity
                 nav_name.setText(currUser.getDisplayName());
                 nav_email.setText(currUser.getEmailAddress());
                 nav_credit.append(Integer.toString(currUser.getCredits()));
-                notification_count.setText(Integer.toString(currUser.getForegroundNotifications()));
+
+                if (currUser.getForegroundNotifications() > 0){
+                    getSupportActionBar().setSubtitle("You have unread notifications");
+                }
+
+                if (currUser.getForegroundNotifications() <= 8) {
+                    notification_count.setText(Integer.toString(currUser.getForegroundNotifications()));
+                }
+                else {
+                    notification_count.setText("9+");
+                }
 
                 if(!currUser.isTocAgreed()){
                     Intent intent = new Intent(getBaseContext(), tocPage.class);
