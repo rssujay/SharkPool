@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,7 +144,8 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 1100);
+        }, 1500);
+
 
         mMessageRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             //@Nullable
@@ -150,6 +153,26 @@ public class ChatActivity extends AppCompatActivity {
             public void onScrollStateChanged(@Nullable RecyclerView recyclerView, int newState) {
                 if (mLayoutManager.findLastVisibleItemPosition() == (mMessageAdapter.getItemCount() - 1)) {
                     mMessageAdapter.loadPreviousMessages();
+                }
+            }
+        });
+
+        sendButton.setEnabled(false);
+
+        chatbox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (chatbox.getText().toString().trim().equals("")){
+                    sendButton.setEnabled(false);
+                }
+                else{
+                    sendButton.setEnabled(true);
                 }
             }
         });
@@ -258,7 +281,6 @@ public class ChatActivity extends AppCompatActivity {
                     return;
                 }
                 mChannelURL = groupChannel.getUrl().trim();
-                Log.d("URL_error", "URL saved as " + mChannelURL);
             }
         });
     }
