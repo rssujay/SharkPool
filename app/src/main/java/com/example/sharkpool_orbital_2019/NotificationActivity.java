@@ -2,8 +2,10 @@ package com.example.sharkpool_orbital_2019;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +28,7 @@ public class NotificationActivity extends AppCompatActivity {
     private DocumentReference countRef = db.collection("users").document(uid);
 
     private RecyclerView recyclerView;
+    private NotifAdapter mData;
     private Vector<NotificationObject> notifVector = new Vector<>();
 
     @Override
@@ -46,11 +49,27 @@ public class NotificationActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     notifVector.add(document.toObject(NotificationObject.class));
                 }
-                NotifAdapter mData = new NotifAdapter(notifVector);
+                mData = new NotifAdapter(notifVector);
                 recyclerView.setAdapter(mData);
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
+                enableSwipeToDeleteAndUndo();
             }
         });
 
+    }
+
+    private void enableSwipeToDeleteAndUndo() {
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+                final int position = viewHolder.getAdapterPosition();
+                mData.DBupdate(mData.mDataset.elementAt(position).getNotificationUUID());
+
+            }
+        };
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchhelper.attachToRecyclerView(recyclerView);
     }
 }

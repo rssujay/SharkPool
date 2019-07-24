@@ -20,7 +20,7 @@ import java.util.Vector;
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder> {
-    private  Vector<NotificationObject> mDataset;
+    public Vector<NotificationObject> mDataset;
     private Context context;
 
     protected static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -67,6 +67,10 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
         if (mDataset.elementAt(position).getBrID().isEmpty()){
             holder.notificationImage.setImageResource(R.drawable.ic_menu_send);
         }
+        else{
+            holder.notificationImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            holder.notificationImage.setImageResource(R.drawable.credits);
+        }
 
         /*
         holder.itemView.setOnTouchListener(new OnSwipeTouchListener(holder.itemView.getContext()){
@@ -84,6 +88,7 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
             }
         });
         */
+
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -121,5 +126,4 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.MyViewHolder
     public int getItemCount() {
         return mDataset.size();
     }
-
 }
