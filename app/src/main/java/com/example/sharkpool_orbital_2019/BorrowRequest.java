@@ -38,9 +38,11 @@ public class BorrowRequest {
 
     /*
     Open: open request, visible for all
-    OnHold: lender has indicated interest, request made invisible to public
-    Confirmed: transaction is confirmed by both parties, credits are exchanged
-    Complete: request is complete (item is returned), added to AppUser.history
+    Closed: lender has indicated interest, request made invisible to public
+    Lent/Borrowed: transaction is confirmed by both parties, credits are exchanged
+    Completed: request is complete (item is returned), added to AppUser.history
+
+    Additional flag: disputed (Y/N)
      */
 
     public BorrowRequest(){} //no-argument constructor for firestore
@@ -56,7 +58,7 @@ public class BorrowRequest {
         this.borrowerName = borrowerName;
         this.comments = comments;
         this.recommendations = recommendations;
-        this.borrowCodeOne = (int) (Math.random()*8998 + 1001);
+        this.borrowCodeOne = (int) (Math.random()*8998 + 1001); //To generate a 4 digit number
         this.borrowCodeTwo = (int) (Math.random()*8998 + 1001);
 
         //Lender

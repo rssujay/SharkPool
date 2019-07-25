@@ -29,8 +29,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import java.util.ArrayList;
-
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,6 +36,13 @@ public class MainMenu extends AppCompatActivity
     static final int request_code = 4005; //this is for notifications count update when user returns from notificationActivity
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private TextView nav_credit;
+    private TextView nav_name;
+    private TextView nav_email;
+
+    private TextView notification_count;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +56,11 @@ public class MainMenu extends AppCompatActivity
 
         //Drawer config
         View hView = navigationView.getHeaderView(0);
-        final TextView nav_credit = hView.findViewById(R.id.creditsNum);
-        final TextView nav_name = hView.findViewById(R.id.nav_name);
-        final TextView nav_email = hView.findViewById(R.id.nav_email);
+        nav_credit = hView.findViewById(R.id.creditsNum);
+        nav_name = hView.findViewById(R.id.nav_name);
+        nav_email = hView.findViewById(R.id.nav_email);
 
-        final TextView notification_count = navigationView.getMenu().findItem(R.id.foregroundNotifications)
+        notification_count = navigationView.getMenu().findItem(R.id.foregroundNotifications)
                 .getActionView().findViewById(R.id.notificationCounter);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,12 +72,14 @@ public class MainMenu extends AppCompatActivity
         //Bottom Nav Bar config
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-
-        //get userdata from DB
+    //get userdata from DB
         currUser.initialize("Error fetching name", "Error fetching email", -1);
-
 
         DocumentReference mDocRef = db.collection("users").document(uid);
         Task<DocumentSnapshot> document = mDocRef.get();
@@ -88,10 +95,13 @@ public class MainMenu extends AppCompatActivity
                 currUser.initialize(displayName,emailAddress, credits, tocAgreed, notifCount);
                 nav_name.setText(currUser.getDisplayName());
                 nav_email.setText(currUser.getEmailAddress());
-                nav_credit.append(Integer.toString(currUser.getCredits()));
+                nav_credit.setText("Credits: ".concat(Integer.toString(currUser.getCredits())));
 
                 if (currUser.getForegroundNotifications() > 0){
                     getSupportActionBar().setSubtitle("You have unread notifications");
+                }
+                else {
+                    getSupportActionBar().setSubtitle("");
                 }
 
                 if (currUser.getForegroundNotifications() <= 8) {

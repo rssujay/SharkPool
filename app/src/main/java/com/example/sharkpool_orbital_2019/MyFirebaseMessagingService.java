@@ -26,15 +26,6 @@ import com.sendbird.android.shadow.com.google.gson.JsonParser;
 import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
-    /*
-    @Override
-    public void onNewToken(String s) {
-        super.onNewToken(s);
-        Log.e("newToken", s);
-        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
-    }
-    */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static int notif_id = 0;
     public String myID = FirebaseAuth.getInstance().getCurrentUser().getUid(); //userID

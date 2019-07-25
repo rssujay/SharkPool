@@ -171,9 +171,15 @@ public class BRview extends AppCompatActivity {
 
                         case "Closed":
                             //Allow lender to cancel lending
+                            /*
                             if (!userIsBorrower) {
                                 cancelLend.setEnabled(true);
                             }
+                            */
+
+                            //Allows both parties to cancel/kick the active lend(er)
+                            cancelLend.setEnabled(true);
+
                             submitCode.setEnabled(true);
                             status.setTextColor(Color.MAGENTA);
                             break;

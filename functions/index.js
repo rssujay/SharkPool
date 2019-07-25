@@ -129,6 +129,9 @@ exports.progressTransaction = functions.firestore.document('requests/{req}')
 
     const lenderName = data.lenderName;
     const lenderID = data.lenderUID;
+
+    const prevLenderName = previousData.lenderName;
+    const prevLenderID = previousData.lenderUID;
       
     //Non status changes
     if (data.status === previousData.status){
@@ -157,12 +160,30 @@ exports.progressTransaction = functions.firestore.document('requests/{req}')
         }
     };
 
+    const payloadPrevLender = {
+        notification: {
+            title: `${prevLenderName}, your transaction has been updated.`,
+            body: `Tap this notification to view details.`,
+        },
+    
+        data: {
+            requestID: requestID,
+        }
+    };
+
     let promises = [];
 
     if (lenderID.length > 0){
         let lenderQuery = await db.collection("users").doc(lenderID).get();
         const lenderToken = lenderQuery.data().notificationToken;
         promises.push(admin.messaging().sendToDevice(lenderToken,payloadLender));
+        console.log(`Lender: ${lenderToken}`); 
+    }
+
+    else if (prevLenderID.length > 0){
+        let lenderQuery = await db.collection("users").doc(prevLenderID).get();
+        const lenderToken = lenderQuery.data().notificationToken;
+        promises.push(admin.messaging().sendToDevice(lenderToken,payloadPrevLender));
         console.log(`Lender: ${lenderToken}`); 
     }
     
