@@ -53,11 +53,17 @@
     <br>
     <small>
     Thank you for choosing Sharkpool for your lending and borrowing needs! Please not that Sharkpool is currently in Beta, and while fully
-    functional, is not meant for a full release in its current state. Please feedback any bugs or suggestions to <b>sharkpoolorbital2019@gmail.com</b>.
+    functional, is not meant for a full release in its current state, as it is only meant
+    to be a project that can meet the Apollo 11 criteria for Orbital 2019. Please feedback any bugs or suggestions to <b>sharkpoolorbital2019@gmail.com</b>.
     <br> <br>
     The following terms and conditions apply:
     <br> <br>
-    (i) hello <br>
+    <ul>
+    <li>  Sharkpool is unable to access your passwords and personal credentials and will not distribute usage data</li>
+    <li>  There is no official association between NUS and Sharkpool, with the exception of Sharkpool being a project for Orbital 2019.</li>
+    <li>  Since this is, at its current state, intended as a project, Sharkpool does not have the resources to deal with disputes. In the unlikely case such a thing were to happen, please contact campus security.</li>
+    <li>  Sharkpool <i>does not bear any responsibility</i> for the loss or damage of items lent.</li>
+    </ul>
     </small>
     ]]></string>
 </resources>
