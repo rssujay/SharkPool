@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sharkpool</string>
     <!-- Strings related to login -->
@@ -46,4 +47,17 @@
     </string-array>
 
     <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
+    <string name="toc"><![CDATA[
+    <big><b>Sharkpool: Terms and Conditions</b></big><br>
+    <br>
+    <br>
+    <small>
+    Thank you for choosing Sharkpool for your lending and borrowing needs! Please not that Sharkpool is currently in Beta, and while fully
+    functional, is not meant for a full release in its current state. Please feedback any bugs or suggestions to <b>sharkpoolorbital2019@gmail.com</b>.
+    <br> <br>
+    The following terms and conditions apply:
+    <br> <br>
+    (i) hello <br>
+    </small>
+    ]]></string>
 </resources>

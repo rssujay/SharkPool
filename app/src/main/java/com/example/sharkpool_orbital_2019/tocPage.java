@@ -2,12 +2,18 @@ package com.example.sharkpool_orbital_2019;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 public class tocPage extends AppCompatActivity {
 
@@ -16,6 +22,11 @@ public class tocPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("Terms & Conditions");
         setContentView(R.layout.activity_toc_page);
+        TextView toc = findViewById(R.id.tocText);
+        toc.setText(Html.fromHtml(getString(R.string.toc)));
+        if (Build.VERSION.SDK_INT >= 26) {
+            toc.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
+        }
     }
 
     public void agreePress(View v){
