@@ -28,7 +28,6 @@ import java.util.Map;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static int notif_id = 0;
-    public String myID = FirebaseAuth.getInstance().getCurrentUser().getUid(); //userID
 
     public static String getToken(Context context) {
         return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
@@ -60,6 +59,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        String myID = FirebaseAuth.getInstance().getCurrentUser().getUid(); //userID
         Map<String,String> data = remoteMessage.getData();
         NotificationObject notificationObject = new NotificationObject();
 

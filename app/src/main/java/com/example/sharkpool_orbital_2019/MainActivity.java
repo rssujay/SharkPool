@@ -2,6 +2,7 @@ package com.example.sharkpool_orbital_2019;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private int clickCount = 0;
+    SharedPreferences prefs = null;
 
     private Button signIn;
     private ProgressBar delay;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         signIn = findViewById(R.id.signinbtn);
         delay = findViewById(R.id.loginProgress);
         mAuth = FirebaseAuth.getInstance();
+        prefs = getSharedPreferences("com.example.sharkpool_orbital_2019", MODE_PRIVATE);
 
         if (getIntent().getExtras() != null){
             notifRedirect = getIntent().getExtras().getString("requestID");
@@ -66,14 +69,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         currentUser = mAuth.getCurrentUser();
 
-        if (currentUser != null && currentUser.isEmailVerified()){
+        if (prefs.getBoolean("firstrun", true)) {
+            prefs.edit().putBoolean("firstrun", false).apply();
+            if(currentUser != null){
+                mAuth.signOut();
+                currentUser = null;
+            }
+        }
+
+        else if (currentUser != null && currentUser.isEmailVerified()){
             proceedToMainMenu();
         }
-        else{
-            enableButton();
-        }
+        enableButton();
     }
 
     private void enableButton(){
