@@ -44,16 +44,17 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 notifVector.clear();
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    notifVector.add(document.toObject(NotificationObject.class));
+                if (queryDocumentSnapshots != null) {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        notifVector.add(document.toObject(NotificationObject.class));
+                    }
+                    mData = new NotifAdapter(notifVector);
+                    recyclerView.setAdapter(mData);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    enableSwipeToDeleteAndUndo();
                 }
-                mData = new NotifAdapter(notifVector);
-                recyclerView.setAdapter(mData);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                enableSwipeToDeleteAndUndo();
             }
         });
-
     }
 
     private void enableSwipeToDeleteAndUndo() {

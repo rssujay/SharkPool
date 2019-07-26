@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ public class OngoingRequestsFragment extends Fragment {
     private String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String errorMsg = "";
 
+    private TextView numCheck;
     private RecyclerView recyclerView;
     private Vector<BorrowRequest> ongoingRequests = new Vector<>();
     private ProgressBar progress;
@@ -37,6 +39,7 @@ public class OngoingRequestsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.requests_fragment, container, false);
+        numCheck = rootView.findViewById(R.id.numCheckOngoing);
         recyclerView = rootView.findViewById(R.id.OngoingRequestsList);
         progress = rootView.findViewById(R.id.progress_horizontal);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -112,6 +115,9 @@ public class OngoingRequestsFragment extends Fragment {
 
     private void updateRecyclerView(){
         OngoingRequestArrayAdaptor mData = new OngoingRequestArrayAdaptor(ongoingRequests);
+        if (ongoingRequests.size() > 0){
+            numCheck.setText("");
+        }
         recyclerView.setAdapter(mData);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         progress.setVisibility(View.INVISIBLE);

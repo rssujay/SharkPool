@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +33,8 @@ public class OpenRequestsFragment extends Fragment {
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     private RecyclerView recyclerView;
+    private TextView numCheck;
+    private ProgressBar progress;
     private Vector<BorrowRequest> openRequests = new Vector<>();
 
     @Nullable
@@ -38,6 +42,8 @@ public class OpenRequestsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.openrequests_fragment, container, false);
+        progress = rootView.findViewById(R.id.progress_open);
+        numCheck = rootView.findViewById(R.id.numCheckOpen);
         recyclerView = rootView.findViewById(R.id.openRequestsList);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
 
@@ -90,8 +96,13 @@ public class OpenRequestsFragment extends Fragment {
                 return o1.getCreatedDate().compareTo(o2.getCreatedDate());
             }
         });
+
+        if (openRequests.size() > 0){
+            numCheck.setText("");
+        }
         RequestArrayAdaptor mData = new RequestArrayAdaptor(openRequests);
         recyclerView.setAdapter(mData);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        progress.setVisibility(View.INVISIBLE);
     }
 }

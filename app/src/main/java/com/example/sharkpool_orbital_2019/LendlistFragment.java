@@ -78,16 +78,18 @@ public class LendlistFragment extends Fragment {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 lendList.clear();
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    lendList.add(document.toObject(MyItem.class));
-                }
-                MyAdapter mData = new MyAdapter(lendList);
-                Integer itemCount = mData.getItemCount();
-                String updateCount = "Number of items in your lending list: ".concat(itemCount.toString());
-                itemCountText.setText(updateCount);
+                if (queryDocumentSnapshots!= null) {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        lendList.add(document.toObject(MyItem.class));
+                    }
+                    MyAdapter mData = new MyAdapter(lendList);
+                    Integer itemCount = mData.getItemCount();
+                    String updateCount = "Number of items in your lending list: ".concat(itemCount.toString());
+                    itemCountText.setText(updateCount);
 
-                recyclerView.setAdapter(mData);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(mData);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                }
             }
         });
     }
