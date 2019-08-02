@@ -12,14 +12,14 @@
 
 
 
-__WIP Android application to facilitate short-term borrowing/lending within the university community.__
+__Android application to facilitate short-term borrowing/lending within the university community.__
 
 ---
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=I1J2v25vTQk
 " target="_blank"><img src="http://img.youtube.com/vi/I1J2v25vTQk/0.jpg" 
 alt="Project launch video" width="240" height="180" border="10" /></a>
 
-[Project Readme](https://docs.google.com/document/d/11NArC7NO7j1bZG8L_qWr9MRImzOhqEFty44V3jZfHig/edit?usp=sharing)
+[Project Readme](https://docs.google.com/document/d/1QmIbW1c1gL-ZFB4OscItEhG1Xlwx41vvqIEXrQn46u8/edit?usp=sharing)
 
 Features include:
 - [x] Incentivized credit-based lending/borrowing system
@@ -33,6 +33,6 @@ Features include:
 Technologies involved:
 1) Android Studio (Java as programming language, XML for graphics / UI) 
 2) Firestore (noSQL-based central database)
-3) Cloud functions (node.js for server-side programming)
+3) Cloud functions (node.js)
 4) Firebase Authentication (Java API for secure user identity verification)
 5) SendBird (Java API for in-app chat)
