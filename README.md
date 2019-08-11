@@ -11,6 +11,7 @@
 ![SendBird](https://miro.medium.com/fit/c/50/50/1*6Uu2nBqQCTnWHeSNfDyzHg.png)
 
 
+[Download APK v1.1](https://github.com/rssujay/SharkPool-Orbital-2019/raw/master/APK/sharkpool_v1.1.apk) 
 
 __Android application to facilitate short-term borrowing/lending within the university community.__
 
