@@ -1,5 +1,4 @@
-# SharkPool-Orbital-2019
-
+# SharkPool
 <p align="center">
   <img src=logo.png>
 </p>
